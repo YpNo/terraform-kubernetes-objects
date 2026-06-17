@@ -1,4 +1,7 @@
 # Peer Authentication Module for Istio/CSM/ASM
+
+Istio `PeerAuthentication` controls mutual TLS (mTLS) for service-to-service traffic, at mesh, namespace, or workload scope, including per-port overrides. This module creates one or more policies from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

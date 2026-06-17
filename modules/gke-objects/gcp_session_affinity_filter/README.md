@@ -1,4 +1,7 @@
 # GCPSessionAffinityFilter module
+
+A GCPSessionAffinityFilter is a GKE Gateway API CRD that defines stateful cookie-based session affinity, referenced from an HTTPRoute rule via an `extensionRef` filter (not attached through a `targetRef`). This module creates one GCPSessionAffinityFilter per entry in the `gcp_session_affinity_filters` list via `for_each`. Because these are rendered with `kubernetes_manifest`, the GKE GCPSessionAffinityFilter CRD must already be installed and the cluster reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -1,4 +1,7 @@
 # Compute Class module for GKE
+
+A ComputeClass is a GKE CRD that declares a prioritized set of compute requirements (machine families/types, GPUs, Spot, reservations) used to provision and autoscale nodes for matching workloads. This module creates one ComputeClass per entry in the `compute_classes` list via `for_each`. Because these are rendered with `kubernetes_manifest`, the GKE ComputeClass CRD must already be installed and the cluster reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

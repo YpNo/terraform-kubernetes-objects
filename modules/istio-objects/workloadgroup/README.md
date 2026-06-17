@@ -1,4 +1,7 @@
 # WorkloadGroup module
+
+Istio `WorkloadGroup` describes a collection of non-Kubernetes workloads (such as VMs) sharing a template and health probe, enabling auto-registration of `WorkloadEntry` members as instances come and go. This module creates one or more groups from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

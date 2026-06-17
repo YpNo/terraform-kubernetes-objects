@@ -1,4 +1,7 @@
 # HealthCheckPolicy module
+
+A HealthCheckPolicy is a GKE Gateway API CRD that configures the Google Cloud load balancer health check (protocol, ports, thresholds, logging) for a backend Service via a `targetRef`. This module creates one HealthCheckPolicy per entry in the `health_check_policies` list via `for_each`. Because these are rendered with `kubernetes_manifest`, the GKE HealthCheckPolicy CRD must already be installed and the cluster reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

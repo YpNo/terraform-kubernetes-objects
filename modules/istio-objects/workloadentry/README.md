@@ -1,4 +1,7 @@
 # WorkloadEntry module
+
+Istio `WorkloadEntry` registers a non-Kubernetes endpoint (such as a VM or bare-metal host) into the mesh so it can be addressed and load-balanced alongside pods. This module creates one or more entries from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

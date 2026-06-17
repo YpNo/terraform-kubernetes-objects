@@ -1,4 +1,6 @@
 # StatefulSet module
+
+A StatefulSet manages stateful Pods with stable, unique network identities and persistent per-Pod storage, providing ordered deployment and scaling. This module creates one or more namespaced StatefulSets from a `list(object)` input via `for_each`.
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

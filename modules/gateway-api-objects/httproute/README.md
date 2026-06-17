@@ -1,4 +1,7 @@
 # HTTP Route module for Gateway API
+
+An `HTTPRoute` matches HTTP/HTTPS traffic arriving at a Gateway listener (by path, header, query, method, hostname), optionally applies filters (redirects, header rewrites, mirroring), and forwards it to backend Services. This module creates one or more `HTTPRoute` objects from the `http_routes` list via `for_each`. These are Gateway API CRDs rendered through `kubernetes_manifest`, so the Gateway API CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -35,13 +38,11 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
-### with terraform
+### with Terraform
 
 ```terraform
-...
-
 module "http_route" {
-  source = "./modules/gke-http-route"
+  source = "./modules/gateway-api-objects/httproute"
 
   http_routes = [
     {

@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Least-privilege: the CI jobs only need to read the repository.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TERRAFORM_VERSION: "1.14.5"
+  TFLINT_VERSION: "v0.63.1"
+
+jobs:
+  fmt:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - name: terraform fmt
+        run: terraform fmt -check -recursive
+
+  tflint:
+    name: TFLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: terraform-linters/setup-tflint@90f302c255ef959cbfb4bd10581afecdb7ece3e6 # v4.1.1
+        with:
+          tflint_version: ${{ env.TFLINT_VERSION }}
+      - name: tflint
+        run: tflint --recursive --no-color
+
+  validate-test:
+    name: Validate & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - name: Validate and test every module
+        # A shared provider plugin cache makes the per-module init loop fast:
+        # the kubernetes provider is downloaded once and reused across modules.
+        env:
+          TF_PLUGIN_CACHE_DIR: ${{ runner.temp }}/tf-plugin-cache
+        run: |
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          rc=0
+          while IFS= read -r dir; do
+            echo "::group::$dir"
+            terraform -chdir="$dir" init -backend=false -no-color || rc=1
+            terraform -chdir="$dir" validate -no-color || rc=1
+            terraform -chdir="$dir" test -no-color || rc=1
+            echo "::endgroup::"
+          done < <(find modules -name versions.tf -printf '%h\n' | sort)
+          exit $rc
+
+  tfsec:
+    name: tfsec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: aquasecurity/tfsec-action@b466648d6e39e7c75324f25d83891162a721f2d6 # v1.0.3
+        with:
+          # Modules are generic/parameterised, so findings are advisory for now.
+          # Flip to "false" to make security findings block the pipeline.
+          soft_fail: true
+
+  checkov:
+    name: Checkov
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: bridgecrewio/checkov-action@0482f7fa9969ae210b3f8535b9a57348775130b7 # v12.3005.0
+        with:
+          directory: modules
+          framework: terraform
+          quiet: true
+          output_format: cli
+          # Advisory for now; set to "false" to enforce.
+          soft_fail: true

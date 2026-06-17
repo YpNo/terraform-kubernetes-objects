@@ -1,4 +1,7 @@
 # WasmPlugin module
+
+Istio `WasmPlugin` extends the Envoy proxy with custom WebAssembly modules (loaded from a URL or OCI image), inserted at a chosen filter phase to add behavior such as auth, transformation, or telemetry. This module creates one or more plugins from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

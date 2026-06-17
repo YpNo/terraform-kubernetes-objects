@@ -1,4 +1,7 @@
 # GCPBackendPolicy module
+
+A GCPBackendPolicy is a GKE Gateway API CRD that applies Google Cloud load balancer backend settings (Cloud Armor, IAP, timeouts, session affinity, logging, connection draining) to a Service via a `targetRef`. This module creates one GCPBackendPolicy per entry in the `gcp_backend_policies` list via `for_each`. Because these are rendered with `kubernetes_manifest`, the GKE GCPBackendPolicy CRD must already be installed and the cluster reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

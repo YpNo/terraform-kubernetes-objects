@@ -1,4 +1,7 @@
 # BackendTLSPolicy module for Gateway API
+
+A `BackendTLSPolicy` tells the Gateway how to validate TLS when connecting to a backend Service (CA certificates, hostname, SANs). This module creates one or more `BackendTLSPolicy` objects from the `backend_tls_policies` list via `for_each`. These are Gateway API CRDs rendered through `kubernetes_manifest`, so the Gateway API CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

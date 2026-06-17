@@ -1,4 +1,7 @@
 # Gateway module for Istio/CSM/ASM
+
+Istio `Gateway` configures a load balancer at the edge of the mesh, declaring the ports, protocols, hosts, and TLS settings for inbound (or outbound) traffic; it is typically paired with a `VirtualService` for routing. This module creates one or more gateways from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

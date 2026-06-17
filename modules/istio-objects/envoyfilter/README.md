@@ -1,4 +1,7 @@
 # EnvoyFilter module
+
+Istio `EnvoyFilter` applies low-level, custom patches directly to the Envoy proxy configuration that Istio generates, for cases not covered by higher-level APIs. This module creates one or more filters from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

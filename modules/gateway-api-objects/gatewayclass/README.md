@@ -1,4 +1,7 @@
 # Gateway Class module for Gateway API
+
+A `GatewayClass` is a cluster-scoped template that ties Gateways to a specific controller implementation (e.g. the GKE L7 load balancer). This module creates one or more `GatewayClass` objects from the `gateway_classes` list via `for_each`. These are Gateway API CRDs rendered through `kubernetes_manifest`, so the Gateway API CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -32,13 +35,11 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
-# with Terraform
+### with Terraform
 
 ```terraform
-...
-
 module "gateway_class" {
-  source = "./modules/gke-gateway-class"
+  source = "./modules/gateway-api-objects/gatewayclass"
 
   gateway_classes = [
     {

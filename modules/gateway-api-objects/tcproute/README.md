@@ -1,4 +1,7 @@
 # TCPRoute module for Gateway API
+
+A `TCPRoute` forwards raw TCP traffic from a Gateway listener to one or more backend Services. This module creates one or more `TCPRoute` objects from the `tcp_routes` list via `for_each`. These are Gateway API CRDs rendered through `kubernetes_manifest`, so the Gateway API CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

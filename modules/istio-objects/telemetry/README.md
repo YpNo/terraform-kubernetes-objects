@@ -1,6 +1,6 @@
 # Telemetry module for Istio/CSM
 
-This module wil be used with Traffic Director (TD) control plane 
+Istio `Telemetry` configures how the mesh produces observability signals: metrics, access logs, and distributed tracing, including providers, sampling, custom tags, and per-scope overrides. This module creates one or more telemetry configs from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -36,3 +36,47 @@ No modules.
 
 No outputs.
 <!-- END_TF_DOCS -->
+
+## Usage
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
+  telemetries = [
+    {
+      # Mesh-wide defaults (name must be 'default', no namespace)
+      name = "default"
+      metrics = [
+        {
+          providers = ["prometheus"]
+        }
+      ]
+      tracing = [
+        {
+          providers = ["zipkin"]
+          sampling  = { percent = 10 } # Sample 10% of traces
+        }
+      ]
+      access_logging = [
+        {
+          providers = ["envoy"]
+        }
+      ]
+    },
+    {
+      # Workload-scoped override
+      name      = "reviews-tracing"
+      namespace = "bookinfo"
+      selector  = { app = "reviews" }
+      tracing = [
+        {
+          providers = ["zipkin"]
+          sampling  = { percent = 100 }
+        }
+      ]
+    }
+  ]
+}
+```

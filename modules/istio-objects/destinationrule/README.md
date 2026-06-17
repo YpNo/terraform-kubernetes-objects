@@ -1,4 +1,7 @@
 # Destination Rule module for Istio/CSM/ASM
+
+Istio `DestinationRule` configures what happens to traffic after routing to a service: load balancing, connection pools, outlier detection (circuit breaking), TLS settings, and named subsets. This module creates one or more rules from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

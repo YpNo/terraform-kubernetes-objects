@@ -1,9 +1,0 @@
----
-variables:
-  GROUP_PIPELINE_TARGET_REF: &REF 2.8.2
-
-include:
-  - project: "common/terraform-modules/group-pipeline"
-    ref: *REF
-    file: group-pipeline.yaml
-

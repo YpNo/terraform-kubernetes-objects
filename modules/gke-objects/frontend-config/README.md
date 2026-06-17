@@ -1,4 +1,7 @@
 # Frontend-config module for GKE
+
+A FrontendConfig is a GKE CRD that configures load balancer front-end behavior for an Ingress, such as SSL policies and HTTP-to-HTTPS redirects. This module creates one FrontendConfig per entry in the `frontend_configs` list via `for_each`. Because these are rendered with `kubernetes_manifest`, the GKE FrontendConfig CRD must already be installed and the cluster reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

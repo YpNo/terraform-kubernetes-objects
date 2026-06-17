@@ -1,10 +1,5 @@
 # Kubernetes Objects Module
 
-[![pipeline status](https://git.maisonsdumonde.net/common/terraform-modules/kubernetes-objects-module/badges/main/pipeline.svg)](https://git.maisonsdumonde.net/common/terraform-modules/kubernetes-objects-module/-/commits/main)
-
-
-[![Latest Release](https://git.maisonsdumonde.net/common/terraform-modules/kubernetes-objects-module/-/badges/release.svg)](https://git.maisonsdumonde.net/common/terraform-modules/kubernetes-objects-module/-/releases)
-
 Managing Kubernetes Objects witout hard links with your Cloud Provider
 
 ## Module Availables

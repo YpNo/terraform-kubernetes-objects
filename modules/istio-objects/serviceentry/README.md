@@ -1,4 +1,7 @@
-# Service Entry for Istio/CSM/ASM
+# Service Entry module for Istio/CSM/ASM
+
+Istio `ServiceEntry` adds external (or otherwise undiscovered) services to the mesh's internal service registry so sidecars can route and apply policy to them. This module creates one or more entries from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

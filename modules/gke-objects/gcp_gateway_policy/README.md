@@ -1,4 +1,7 @@
 # GCPGatewayPolicy module
+
+A GCPGatewayPolicy is a GKE Gateway API CRD that applies Google Cloud load balancer front-end settings (global access, SSL policy, region) to a Gateway via a `targetRef`. This module creates one GCPGatewayPolicy per entry in the `gcp_gateway_policies` list via `for_each`. Because these are rendered with `kubernetes_manifest`, the GKE GCPGatewayPolicy CRD must already be installed and the cluster reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

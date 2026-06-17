@@ -1,4 +1,6 @@
 # CronJob module
+
+A CronJob runs a Job on a repeating time-based schedule (cron syntax), making it suitable for periodic tasks like backups, reports, and cleanups. This module creates one or more namespaced CronJobs from a `list(object)` input via `for_each`.
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

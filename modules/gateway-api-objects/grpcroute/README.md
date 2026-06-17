@@ -1,4 +1,7 @@
 # GRPCRoute module for Gateway API
+
+A `GRPCRoute` matches gRPC traffic arriving at a Gateway listener (by service/method, headers, hostname) and forwards it to backend Services. This module creates one or more `GRPCRoute` objects from the `grpc_routes` list via `for_each`. These are Gateway API CRDs rendered through `kubernetes_manifest`, so the Gateway API CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

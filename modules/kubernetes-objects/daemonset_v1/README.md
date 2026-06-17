@@ -1,4 +1,6 @@
 # DaemonSet module
+
+A DaemonSet ensures a copy of a Pod runs on every (or a selected set of) node, typically for node-level agents like log collectors or monitoring daemons. This module creates one or more namespaced DaemonSets from a `list(object)` input via `for_each`.
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -1,4 +1,6 @@
-# Virtual Service modume for Istio/CSM/ASM
+# Virtual Service module for Istio/CSM/ASM
+
+Istio `VirtualService` defines how requests are routed to a service: host/path matching, traffic splitting, redirects, rewrites, retries, timeouts, fault injection, and mirroring over HTTP, TLS, and TCP. This module creates one or more virtual services from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

@@ -1,4 +1,7 @@
-# Gateway Policy modume for Gateway API
+# Gateway Policy module for Gateway API
+
+A Gateway Policy is a generic, implementation-specific policy CRD (e.g. GKE `GCPBackendPolicy` or `HealthCheckPolicy`) attached to a Gateway or Service to tune behaviour like security, health checks, or backend settings. This module creates one or more such policy objects from the `gateway_policies` list via `for_each`, with the `kind`, `api_version`, and free-form `policy_spec` supplied per entry. These are CRDs rendered through `kubernetes_manifest`, so the relevant CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -37,12 +40,10 @@ No outputs.
 ## Usage
 ### with Terraform
 
-Example 1 :
+Example 1:
 ```terraform
-
-...
 module "backend_policy" {
-  source = "./modules/gke-gateway-policy"
+  source = "./modules/gateway-api-objects/policy"
 
   gateway_policies = [
     {
@@ -65,10 +66,8 @@ module "backend_policy" {
 
 Example 2:
 ```terraform
-...
-
 module "health_check_policy" {
-  source = "./modules/gke-gateway-policy"
+  source = "./modules/gateway-api-objects/policy"
 
   gateway_policies = [
     {

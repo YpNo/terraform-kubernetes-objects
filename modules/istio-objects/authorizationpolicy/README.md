@@ -1,4 +1,7 @@
-# Authorization Policy modume for Istio/CSM/ASM
+# Authorization Policy module for Istio/CSM/ASM
+
+Istio `AuthorizationPolicy` enforces access control (ALLOW/DENY/AUDIT/CUSTOM) on workloads, deciding which requests reach a service based on source, operation, and conditions. This module creates one or more policies from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

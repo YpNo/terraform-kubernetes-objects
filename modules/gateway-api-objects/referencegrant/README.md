@@ -1,4 +1,7 @@
-# Reference GRANT module for Gateway API
+# ReferenceGrant module for Gateway API
+
+A `ReferenceGrant` permits cross-namespace references in the Gateway API — for example, letting a Gateway or Route in one namespace point at a Secret or Service in another. This module creates one or more `ReferenceGrant` objects from the `reference_grants` list via `for_each`, each declaring the allowed `from` and `to` namespaces/kinds. These are Gateway API CRDs rendered through `kubernetes_manifest`, so the Gateway API CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -38,11 +41,9 @@ No outputs.
 ### with Terraform
 
 ```terraform
-...
-
 # Allows Gateways in the 'gateway-infra' namespace to reference Secrets in the 'default' namespace.
 module "reference_grant" {
-  source = "./modules/gke-reference-grant"
+  source = "./modules/gateway-api-objects/referencegrant"
 
   reference_grants = [
     {

@@ -1,4 +1,7 @@
 # Request Authentication Module for Istio/CSM/ASM
+
+Istio `RequestAuthentication` validates end-user credentials (JWTs) on incoming requests, defining accepted issuers, JWKS sources, audiences, and how token claims map to headers. This module creates one or more policies from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

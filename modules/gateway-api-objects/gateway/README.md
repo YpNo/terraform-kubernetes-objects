@@ -1,4 +1,7 @@
 # Gateway module for Gateway API
+
+A `Gateway` describes how external traffic enters the cluster: it binds a GatewayClass to a set of listeners (protocol, port, hostname, TLS) that routes then attach to. This module creates one or more `Gateway` objects from the `gateways` list via `for_each`. These are Gateway API CRDs rendered through `kubernetes_manifest`, so the Gateway API CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -38,10 +41,8 @@ No outputs.
 ### with Terraform
 
 ```terraform
-...
-
 module "gateway" {
-  source = "./modules/gke-gateway"
+  source = "./modules/gateway-api-objects/gateway"
 
   gateways = [
     {

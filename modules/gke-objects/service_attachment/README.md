@@ -1,4 +1,7 @@
 # ServiceAttachment module
+
+A ServiceAttachment is a GKE CRD that publishes a Service through Private Service Connect (PSC), controlling connection preference, NAT subnets, and consumer allow/reject lists. This module creates one ServiceAttachment per entry in the `service_attachments` list via `for_each`. Because these are rendered with `kubernetes_manifest`, the GKE ServiceAttachment CRD must already be installed and the cluster reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

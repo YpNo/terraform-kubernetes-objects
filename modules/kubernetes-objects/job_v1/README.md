@@ -1,4 +1,6 @@
 # Job module
+
+A Job runs one or more Pods to completion for a finite, batch-style task and tracks successful terminations. This module creates one or more namespaced Jobs from a `list(object)` input via `for_each`.
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

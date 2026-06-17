@@ -1,4 +1,7 @@
 # GCPSessionAffinityPolicy module
+
+A GCPSessionAffinityPolicy is a GKE Gateway API CRD that applies stateful cookie-based session affinity to a Service via a `targetRef`. This module creates one GCPSessionAffinityPolicy per entry in the `gcp_session_affinity_policies` list via `for_each`. Because these are rendered with `kubernetes_manifest`, the GKE GCPSessionAffinityPolicy CRD must already be installed and the cluster reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -1,4 +1,7 @@
 # Sidecar module
+
+Istio `Sidecar` scopes a workload's proxy configuration, limiting which inbound ports it accepts and which outbound hosts it can reach, which reduces proxy memory and configuration footprint. This module creates one or more sidecar configs from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

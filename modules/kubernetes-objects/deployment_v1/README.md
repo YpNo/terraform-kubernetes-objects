@@ -1,4 +1,6 @@
 # Deployment module
+
+A Deployment manages a replicated, self-healing set of Pods and handles rolling updates and rollbacks for stateless workloads. This module creates one or more namespaced Deployments from a `list(object)` input via `for_each`.
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

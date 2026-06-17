@@ -1,4 +1,7 @@
 # GCPTrafficDistributionPolicy module
+
+A GCPTrafficDistributionPolicy is a GKE Gateway API CRD that controls how traffic is spread across zones/regions and locality load-balancing algorithms for one or more Services via `targetRefs`. This module creates one GCPTrafficDistributionPolicy per entry in the `gcp_traffic_distribution_policies` list via `for_each`. Because these are rendered with `kubernetes_manifest`, the GKE GCPTrafficDistributionPolicy CRD must already be installed and the cluster reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -1,4 +1,7 @@
 # ProxyConfig module
+
+Istio `ProxyConfig` tunes the Envoy sidecar proxy for selected workloads, setting worker concurrency, extra environment variables, and the proxy image variant. This module creates one or more configs from a `list(object)` input via `for_each`. Because these are Istio CRDs rendered through `kubernetes_manifest`, the Istio CRDs must already be installed and a cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

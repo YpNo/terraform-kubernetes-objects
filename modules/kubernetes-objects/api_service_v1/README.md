@@ -14,7 +14,7 @@ Manages **APIService** registrations (`kubernetes_api_service_v1`) used to wire 
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 3.2.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
 

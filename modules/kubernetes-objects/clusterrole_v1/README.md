@@ -6,14 +6,14 @@ Manages **ClusterRole** RBAC objects (`kubernetes_cluster_role_v1`) — cluster-
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.37.1 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
@@ -23,14 +23,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [kubernetes_cluster_role_v1.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role_v1) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_cluster_roles"></a> [cluster\_roles](#input\_cluster\_roles) | A list of Kubernetes Role configurations. | <pre>list(object({<br>    name = string<br>    rules = list(object({<br>      api_groups     = optioan(list(string))<br>      resources      = optional(list(string))<br>      resource_names = optional(list(string), []) # resource_names are optional<br>      verbs          = list(string)<br>    }))<br>  }))</pre> | n/a | yes |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_cluster_roles"></a> [cluster\_roles](#input\_cluster\_roles) | A list of Kubernetes Role configurations. | <pre>list(object({<br/>    name = string<br/>    rules = list(object({<br/>      api_groups     = optional(list(string))<br/>      resources      = optional(list(string))<br/>      resource_names = optional(list(string), []) # resource_names are optional<br/>      verbs          = list(string)<br/>    }))<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 

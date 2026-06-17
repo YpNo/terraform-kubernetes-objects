@@ -102,10 +102,19 @@ jobs:
           install -m 0755 terraform-docs "$HOME/.local/bin/terraform-docs"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           rm -f "$tarball" terraform-docs
-      - name: Regenerate README
-        run: terraform-docs markdown table --output-mode inject --output-file README.md .
+      - name: Regenerate every module README
+        # Each module dir owns a README.md with <!-- BEGIN_TF_DOCS --> markers;
+        # the repo-root README is hand-written and intentionally excluded.
+        run: |
+          set -euo pipefail
+          while IFS= read -r dir; do
+            echo "::group::$dir"
+            terraform-docs markdown table --output-mode inject --output-file README.md "$dir"
+            echo "::endgroup::"
+          done < <(find modules -name versions.tf -printf '%h\n' | sort)
       - name: Fail on docs drift
-        run: git diff --exit-code -- README.md
+        # The job only rewrites module READMEs, so any diff under modules/ is doc drift.
+        run: git diff --exit-code -- modules
 
   tfsec:
     name: tfsec

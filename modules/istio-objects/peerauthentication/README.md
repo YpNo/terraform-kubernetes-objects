@@ -6,14 +6,14 @@ Istio `PeerAuthentication` controls mutual TLS (mTLS) for service-to-service tra
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.37.1 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
@@ -23,14 +23,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [kubernetes_manifest.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_peer_authentications"></a> [peer\_authentications](#input\_peer\_authentications) | A list of Istio PeerAuthentication configurations. | <pre>list(object({<br>    name        = string           # For mesh-wide, name must be 'default'. For namespace/workload, can be any valid name.<br>    namespace   = optional(string) # Optional. Omit for mesh-wide policies (name='default').<br>    labels      = optional(map(string))<br>    annotations = optional(map(string))<br><br>    selector = optional(map(string)) # Labels to select target workloads (pods) for this policy.<br><br>    # Default mTLS mode for the workloads/namespace/mesh.<br>    # "UNSET": Inherit from parent (e.g., from mesh-wide for namespace-wide).<br>    # "STRICT": All peer communication must be mTLS.<br>    # "PERMISSIVE": mTLS is optional (both mTLS and plain text allowed).<br>    # "DISABLE": mTLS is disabled.<br>    mtls_mode = optional(string)<br><br>    # mTLS mode overrides for specific ports. Keys are port numbers as strings.<br>    # e.g., { "80": "PERMISSIVE", "443": "STRICT" }<br>    port_level_mtls = optional(map(string), {})<br>  }))</pre> | n/a | yes |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_peer_authentications"></a> [peer\_authentications](#input\_peer\_authentications) | A list of Istio PeerAuthentication configurations. | <pre>list(object({<br/>    name        = string           # For mesh-wide, name must be 'default'. For namespace/workload, can be any valid name.<br/>    namespace   = optional(string) # Optional. Omit for mesh-wide policies (name='default').<br/>    labels      = optional(map(string))<br/>    annotations = optional(map(string))<br/><br/>    selector = optional(map(string)) # Labels to select target workloads (pods) for this policy.<br/><br/>    # Default mTLS mode for the workloads/namespace/mesh.<br/>    # "UNSET": Inherit from parent (e.g., from mesh-wide for namespace-wide).<br/>    # "STRICT": All peer communication must be mTLS.<br/>    # "PERMISSIVE": mTLS is optional (both mTLS and plain text allowed).<br/>    # "DISABLE": mTLS is disabled.<br/>    mtls_mode = optional(string)<br/><br/>    # mTLS mode overrides for specific ports. Keys are port numbers as strings.<br/>    # e.g., { "80": "PERMISSIVE", "443": "STRICT" }<br/>    port_level_mtls = optional(map(string), {})<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 

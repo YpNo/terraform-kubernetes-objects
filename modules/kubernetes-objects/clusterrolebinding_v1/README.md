@@ -7,14 +7,14 @@ Manages **ClusterRoleBinding** RBAC objects (`kubernetes_cluster_role_binding_v1
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.37.1 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
@@ -24,14 +24,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [kubernetes_cluster_role_binding_v1.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role_binding_v1) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_cluster_role_bindings"></a> [cluster\_role\_bindings](#input\_cluster\_role\_bindings) | A list of Kubernetes RoleBinding configurations. | <pre>list(object({<br>    name = string<br>    role_ref = object({<br>      api_group = string # e.g., "rbac.authorization.k8s.io"<br>      kind      = string # "Role" or "ClusterRole"<br>      name      = string # Name of the Role or ClusterRole being bound<br>    })<br>    subjects = list(object({<br>      kind      = string           # "ServiceAccount", "User", or "Group"<br>      name      = string           # Name of the ServiceAccount, User, or Group<br>      api_group = optional(string) # e.g., "rbac.authorization.k8s.io" for User/Group, "" for ServiceAccount<br>      namespace = optional(string) # Required for ServiceAccount kind<br>    }))<br>  }))</pre> | n/a | yes |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_cluster_role_bindings"></a> [cluster\_role\_bindings](#input\_cluster\_role\_bindings) | A list of Kubernetes RoleBinding configurations. | <pre>list(object({<br/>    name = string<br/>    role_ref = object({<br/>      api_group = string # e.g., "rbac.authorization.k8s.io"<br/>      kind      = string # "Role" or "ClusterRole"<br/>      name      = string # Name of the Role or ClusterRole being bound<br/>    })<br/>    subjects = list(object({<br/>      kind      = string           # "ServiceAccount", "User", or "Group"<br/>      name      = string           # Name of the ServiceAccount, User, or Group<br/>      api_group = optional(string) # e.g., "rbac.authorization.k8s.io" for User/Group, "" for ServiceAccount<br/>      namespace = optional(string) # Required for ServiceAccount kind<br/>    }))<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 

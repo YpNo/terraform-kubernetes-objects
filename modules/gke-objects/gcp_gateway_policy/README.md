@@ -14,7 +14,7 @@ A GCPGatewayPolicy is a GKE Gateway API CRD that applies Google Cloud load balan
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 3.2.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
 

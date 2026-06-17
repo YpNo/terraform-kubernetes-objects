@@ -14,7 +14,7 @@ Manages namespaced **LimitRange** objects (`kubernetes_limit_range_v1`) that set
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 3.2.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
 

@@ -8,14 +8,14 @@ Manages namespaced **ConfigMap** objects holding non-confidential key/value conf
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.37.1 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
@@ -25,14 +25,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [kubernetes_config_map.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_config_maps"></a> [config\_maps](#input\_config\_maps) | A list of Kubernetes ConfigMap configurations. | <pre>list(object({<br>    name      = string<br>    namespace = string<br>    data      = map(string) # Data is a map where both keys and values are strings<br>  }))</pre> | n/a | yes |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_config_maps"></a> [config\_maps](#input\_config\_maps) | A list of Kubernetes ConfigMap configurations. | <pre>list(object({<br/>    name      = string<br/>    namespace = string<br/>    data      = map(string) # Data is a map where both keys and values are strings<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 

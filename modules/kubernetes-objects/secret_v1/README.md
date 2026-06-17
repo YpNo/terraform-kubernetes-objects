@@ -6,14 +6,14 @@ Manages namespaced **Secret** objects (`kubernetes_secret_v1`) holding sensitive
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.37.1 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
@@ -23,14 +23,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [kubernetes_secret_v1.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret_v1) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_secrets"></a> [secrets](#input\_secrets) | A list of Kubernetes Secret configurations. | <pre>list(object({<br>    name      = string<br>    namespace = string<br>    type      = optional(string, "Opaque") # e.g., "Opaque", "kubernetes.io/dockerconfigjson", "kubernetes.io/tls"<br>    data      = map(string)                # Keys are data keys, values are base64-encoded strings (Terraform handles encoding for common types)<br>  }))</pre> | n/a | yes |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_secrets"></a> [secrets](#input\_secrets) | A list of Kubernetes Secret configurations. | <pre>list(object({<br/>    name      = string<br/>    namespace = string<br/>    type      = optional(string, "Opaque") # e.g., "Opaque", "kubernetes.io/dockerconfigjson", "kubernetes.io/tls"<br/>    data      = map(string)                # Keys are data keys, values are base64-encoded strings (Terraform handles encoding for common types)<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 

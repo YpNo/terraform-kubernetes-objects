@@ -8,14 +8,14 @@ Manages namespaced **PersistentVolumeClaim** objects requesting storage for pods
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.37.1 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
@@ -25,15 +25,15 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [kubernetes_persistent_volume_claim.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/persistent_volume_claim) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_persistent_volume_claims"></a> [persistent\_volume\_claims](#input\_persistent\_volume\_claims) | A list of Kubernetes Persistent Volume Claims to create. | <pre>list(object({<br>    name               = string<br>    namespace          = string<br>    labels             = optional(map(string))<br>    annotations        = optional(map(string))<br>    access_modes       = list(string)<br>    storage_request    = string # e.g., "10Gi", "1Ti"<br>    storage_class_name = optional(string)<br>    volume_name        = optional(string)<br>    volume_mode        = optional(string, "Filesystem")<br><br>    selector = optional(object({<br>      match_labels = optional(map(string))<br>      match_expressions = optional(list(object({<br>        key      = string<br>        operator = string<br>        values   = list(string)<br>      })))<br>    }))<br>  }))</pre> | `[]` | no |
-| <a name="input_timeouts"></a> [timeouts](#input\_timeouts) | An optional timeout block for creating the resource. | <pre>object({<br>    create = optional(string)<br>  })</pre> | `{}` | no |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_persistent_volume_claims"></a> [persistent\_volume\_claims](#input\_persistent\_volume\_claims) | A list of Kubernetes Persistent Volume Claims to create. | <pre>list(object({<br/>    name               = string<br/>    namespace          = string<br/>    labels             = optional(map(string))<br/>    annotations        = optional(map(string))<br/>    access_modes       = list(string)<br/>    storage_request    = string # e.g., "10Gi", "1Ti"<br/>    storage_class_name = optional(string)<br/>    volume_name        = optional(string)<br/>    volume_mode        = optional(string, "Filesystem")<br/><br/>    selector = optional(object({<br/>      match_labels = optional(map(string))<br/>      match_expressions = optional(list(object({<br/>        key      = string<br/>        operator = string<br/>        values   = list(string)<br/>      })))<br/>    }))<br/>  }))</pre> | `[]` | no |
+| <a name="input_timeouts"></a> [timeouts](#input\_timeouts) | An optional timeout block for creating the resource. | <pre>object({<br/>    create = optional(string)<br/>  })</pre> | `{}` | no |
 
 ## Outputs
 

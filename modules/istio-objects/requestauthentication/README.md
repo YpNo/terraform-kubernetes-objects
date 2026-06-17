@@ -6,14 +6,14 @@ Istio `RequestAuthentication` validates end-user credentials (JWTs) on incoming 
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.37.1 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
@@ -23,14 +23,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [kubernetes_manifest.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_request_authentications"></a> [request\_authentications](#input\_request\_authentications) | A list of Istio RequestAuthentication configurations. | <pre>list(object({<br>    name        = string<br>    namespace   = string<br>    labels      = optional(map(string), null)<br>    annotations = optional(map(string), null)<br><br>    selector = optional(map(string)) # Labels to select target workloads (pods) for this policy.<br><br>    jwt_rules = list(object({<br>      issuer   = string           # e.g., "https://accounts.google.com" or "auth.example.com"<br>      jwks_uri = optional(string) # URL for JSON Web Key Set (JWKS)<br>      jwks     = optional(string) # JWKS content directly (mutually exclusive with jwks_uri)<br><br>      audiences = optional(list(string), []) # e.g., ["my-service.default.svc.cluster.local"]<br>      from_headers = optional(list(object({<br>        name   = string           # HTTP header name (e.g., "Authorization")<br>        prefix = optional(string) # Optional prefix to strip (e.g., "Bearer ")<br>      })), [])<br>      from_params = optional(list(string), []) # List of query parameters (e.g., ["jwt_token"])<br><br>      # New header to output the entire JWT payload (base64url encoded)<br>      output_payload_to_header = optional(string) # e.g., "x-jwt-payload"<br><br>      # Map specific claims from JWT to HTTP headers. Format: "claim_name=header_name"<br>      output_claim_to_headers = optional(list(string), []) # e.g., ["sub=x-jwt-subject", "aud=x-jwt-audience"]<br><br>      forward_original_token = optional(bool, true) # Whether to forward the original token to the application. Defaults to true.<br><br>      # Legacy fields for Istio < 1.10. Use with caution.<br>      jwks_uri_alias        = optional(string)<br>      jwt_filter_expression = optional(string)<br>    }))<br>  }))</pre> | n/a | yes |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_request_authentications"></a> [request\_authentications](#input\_request\_authentications) | A list of Istio RequestAuthentication configurations. | <pre>list(object({<br/>    name        = string<br/>    namespace   = string<br/>    labels      = optional(map(string), null)<br/>    annotations = optional(map(string), null)<br/><br/>    selector = optional(map(string)) # Labels to select target workloads (pods) for this policy.<br/><br/>    jwt_rules = list(object({<br/>      issuer   = string           # e.g., "https://accounts.google.com" or "auth.example.com"<br/>      jwks_uri = optional(string) # URL for JSON Web Key Set (JWKS)<br/>      jwks     = optional(string) # JWKS content directly (mutually exclusive with jwks_uri)<br/><br/>      audiences = optional(list(string), []) # e.g., ["my-service.default.svc.cluster.local"]<br/>      from_headers = optional(list(object({<br/>        name   = string           # HTTP header name (e.g., "Authorization")<br/>        prefix = optional(string) # Optional prefix to strip (e.g., "Bearer ")<br/>      })), [])<br/>      from_params = optional(list(string), []) # List of query parameters (e.g., ["jwt_token"])<br/><br/>      # New header to output the entire JWT payload (base64url encoded)<br/>      output_payload_to_header = optional(string) # e.g., "x-jwt-payload"<br/><br/>      # Map specific claims from JWT to HTTP headers. Format: "claim_name=header_name"<br/>      output_claim_to_headers = optional(list(string), []) # e.g., ["sub=x-jwt-subject", "aud=x-jwt-audience"]<br/><br/>      forward_original_token = optional(bool, true) # Whether to forward the original token to the application. Defaults to true.<br/><br/>      # Legacy fields for Istio < 1.10. Use with caution.<br/>      jwks_uri_alias        = optional(string)<br/>      jwt_filter_expression = optional(string)<br/>    }))<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 

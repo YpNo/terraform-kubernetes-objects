@@ -7,14 +7,14 @@ Manages namespaced **Ingress** objects (`kubernetes_ingress_v1`) exposing HTTP/H
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.37.1 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
@@ -24,14 +24,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [kubernetes_ingress_v1.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/ingress_v1) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_ingresses"></a> [ingresses](#input\_ingresses) | A list of ingress configurations. | <pre>list(object({<br>    name                 = string<br>    namespace            = string<br>    ingress_class        = optional(string, "gce")<br>    backend_name         = string<br>    backend_port         = optional(number, 80)<br>    static_ip_address    = optional(string)<br>    type                 = optional(string, "global")<br>    annotations          = optional(map(string), {})<br>    frontend_config      = optional(string)<br>    allow_http           = optional(bool, false)<br>    pre_shared_cert      = optional(string)<br>    managed_certificates = optional(list(string), [])<br>  }))</pre> | n/a | yes |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_ingresses"></a> [ingresses](#input\_ingresses) | A list of ingress configurations. | <pre>list(object({<br/>    name                 = string<br/>    namespace            = string<br/>    ingress_class        = optional(string, "gce")<br/>    backend_name         = string<br/>    backend_port         = optional(number, 80)<br/>    static_ip_address    = optional(string)<br/>    type                 = optional(string, "global")<br/>    annotations          = optional(map(string), {})<br/>    frontend_config      = optional(string)<br/>    allow_http           = optional(bool, false)<br/>    pre_shared_cert      = optional(string)<br/>    managed_certificates = optional(list(string), [])<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 

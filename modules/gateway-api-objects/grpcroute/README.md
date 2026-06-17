@@ -14,7 +14,7 @@ A `GRPCRoute` matches gRPC traffic arriving at a Gateway listener (by service/me
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 3.2.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
 

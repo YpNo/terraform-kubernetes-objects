@@ -6,14 +6,14 @@ Manages namespaced **Service** objects (`kubernetes_service_v1`) exposing pods o
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.37.1 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | >= 2.37.1 |
 
 ## Modules
@@ -23,14 +23,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [kubernetes_service_v1.this](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_v1) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_services"></a> [services](#input\_services) | A list of Kubernetes Service configurations. | <pre>list(object({<br>    name             = string<br>    namespace        = string<br>    annotations      = optional(map(string), {})     # Annotations for the Service<br>    labels           = optional(map(string), {})     # Labels for the Service<br>    type             = optional(string, "ClusterIP") # e.g., "ClusterIP", "NodePort", "LoadBalancer", "ExternalName"<br>    load_balancer_ip = optional(string)              # Required if type is "LoadBalancer" and a specific IP is desired<br>    ports = list(object({<br>      name        = string                  # Name of the port<br>      port        = number                  # Service port<br>      protocol    = optional(string, "TCP") # e.g., "TCP", "UDP", "SCTP"<br>      target_port = optional(number)        # Port on the pod to which traffic is sent (defaults to 'port')<br>    }))<br>    selector = optional(map(string), {}) # Labels to select pods<br>    # ignore_changes         = optional(list(string), []) # List of lifecycle.ignore_changes paths<br>  }))</pre> | n/a | yes |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_services"></a> [services](#input\_services) | A list of Kubernetes Service configurations. | <pre>list(object({<br/>    name             = string<br/>    namespace        = string<br/>    annotations      = optional(map(string), {})     # Annotations for the Service<br/>    labels           = optional(map(string), {})     # Labels for the Service<br/>    type             = optional(string, "ClusterIP") # e.g., "ClusterIP", "NodePort", "LoadBalancer", "ExternalName"<br/>    load_balancer_ip = optional(string)              # Required if type is "LoadBalancer" and a specific IP is desired<br/>    ports = list(object({<br/>      name        = string                  # Name of the port<br/>      port        = number                  # Service port<br/>      protocol    = optional(string, "TCP") # e.g., "TCP", "UDP", "SCTP"<br/>      target_port = optional(number)        # Port on the pod to which traffic is sent (defaults to 'port')<br/>    }))<br/>    selector = optional(map(string), {}) # Labels to select pods<br/>    # ignore_changes         = optional(list(string), []) # List of lifecycle.ignore_changes paths<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 

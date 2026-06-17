@@ -1,4 +1,7 @@
 # Validating Webhook Configuration v1 module
+
+Manages **ValidatingWebhookConfiguration** objects (`kubernetes_validating_webhook_configuration_v1`) registering admission webhooks that accept or reject objects on create/update. Cluster-scoped; one per entry in its `list(object)` input via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

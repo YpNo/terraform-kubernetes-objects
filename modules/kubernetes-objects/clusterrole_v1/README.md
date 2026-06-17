@@ -1,4 +1,7 @@
 # Cluster Role module
+
+Manages **ClusterRole** RBAC objects (`kubernetes_cluster_role_v1`) — cluster-scoped permission sets. Creates one ClusterRole per entry in its `list(object)` input via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

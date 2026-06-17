@@ -1,4 +1,7 @@
 # Resource Quota module
+
+Manages namespaced **ResourceQuota** objects (`kubernetes_resource_quota_v1`) capping aggregate resource usage in a namespace. One ResourceQuota per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

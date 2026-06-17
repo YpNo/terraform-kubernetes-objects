@@ -1,4 +1,7 @@
 # Pod Disruption Budget module
+
+Manages **PodDisruptionBudget** objects that limit voluntary disruptions for a set of pods. Namespaced; one PDB per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

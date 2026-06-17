@@ -1,4 +1,7 @@
 # Priority Class v1
+
+Manages cluster-scoped **PriorityClass** objects (`kubernetes_priority_class_v1`) mapping a name to a scheduling priority value. One per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

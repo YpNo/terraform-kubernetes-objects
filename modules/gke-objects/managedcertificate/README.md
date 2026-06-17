@@ -1,4 +1,4 @@
-# Managed Certificat Module for GKE
+# Managed Certificate Module for GKE
 
 A ManagedCertificate is a GKE CRD that provisions and renews Google-managed SSL certificates for a set of domains served through a GKE Ingress. This module creates one ManagedCertificate per entry in the `managed_certificates` list via `for_each`. Because these are rendered with `kubernetes_manifest`, the GKE ManagedCertificate CRD must already be installed and the cluster reachable at plan time.
 

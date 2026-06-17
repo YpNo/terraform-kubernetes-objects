@@ -1,4 +1,7 @@
 # Storage Class module
+
+Manages cluster-scoped **StorageClass** objects (`kubernetes_storage_class`) describing dynamic storage provisioners. One StorageClass per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

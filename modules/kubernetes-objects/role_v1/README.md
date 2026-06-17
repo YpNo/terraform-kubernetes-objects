@@ -1,4 +1,7 @@
 # Role module for v1 version of kubernetes API
+
+Manages namespaced **Role** RBAC objects (`kubernetes_role_v1`) — permission sets scoped to a namespace. One Role per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

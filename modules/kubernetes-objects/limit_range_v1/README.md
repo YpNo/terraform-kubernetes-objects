@@ -1,4 +1,7 @@
 # Limit Range module
+
+Manages namespaced **LimitRange** objects (`kubernetes_limit_range_v1`) that set default/min/max resource constraints for pods, containers and PVCs. One LimitRange per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

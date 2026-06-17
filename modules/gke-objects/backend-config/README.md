@@ -61,8 +61,7 @@ inputs = {
         { code = 500, ttl = 100 }
       ]
       iap_enabled              = true
-      iap_rctoken_aud          = "your-audience-string"
-      iap_httpoption           = "REDIRECT_HTTP_TO_HTTPS"
+      iap_secret_name          = "iap-oauth-secret"
       cloudarmor_enabled       = true
       cloudarmor_custom_policy = "my-custom-security-policy"
       custom_request_headers   = ["X-My-Request-Header: value"]

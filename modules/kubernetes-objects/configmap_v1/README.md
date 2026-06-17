@@ -1,4 +1,7 @@
 # Config Map modume for v1 version of kubernetes API
+
+Manages namespaced **ConfigMap** objects (`kubernetes_config_map_v1`) holding non-confidential key/value configuration. Creates one ConfigMap per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -1,4 +1,7 @@
 # Persistent Volume
+
+Manages cluster-scoped **PersistentVolume** objects (`kubernetes_persistent_volume_v1`) representing provisioned storage. One PV per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

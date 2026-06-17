@@ -1,4 +1,7 @@
 # Secret module for v1 version of kubernetes API
+
+Manages namespaced **Secret** objects (`kubernetes_secret_v1`) holding sensitive data. One Secret per entry via `for_each`. Avoid committing secret values to source control.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

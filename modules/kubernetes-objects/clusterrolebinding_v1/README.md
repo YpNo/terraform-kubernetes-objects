@@ -1,5 +1,8 @@
 # Cluster Role Bindings module
 
+
+Manages **ClusterRoleBinding** RBAC objects (`kubernetes_cluster_role_binding_v1`) that grant a ClusterRole to subjects cluster-wide. Creates one binding per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -1,4 +1,7 @@
 # Role Bindings module for v1 version of kubernetes API
+
+Manages namespaced **RoleBinding** objects (`kubernetes_role_binding_v1`) granting a Role/ClusterRole within a namespace. One binding per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

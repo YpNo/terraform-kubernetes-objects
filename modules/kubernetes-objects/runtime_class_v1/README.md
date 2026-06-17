@@ -1,4 +1,7 @@
 # Runtime Class v1 module
+
+Manages cluster-scoped **RuntimeClass** objects (`kubernetes_runtime_class_v1`) selecting the container runtime configuration for pods. One per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

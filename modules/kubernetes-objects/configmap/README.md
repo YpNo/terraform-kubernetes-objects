@@ -1,6 +1,9 @@
 # Config Map module
 
 > **Deprecated:** use the [`configmap_v1`](../configmap_v1) module instead. This alias targets the provider's non-versioned resource name and is kept only for backward compatibility; it will be removed in a future major release.
+
+Manages namespaced **ConfigMap** objects holding non-confidential key/value configuration. Creates one ConfigMap per entry in its `list(object)` input via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

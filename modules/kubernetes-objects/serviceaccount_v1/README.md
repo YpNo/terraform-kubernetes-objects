@@ -1,4 +1,7 @@
 # Service Account module for v1 version of kubernetes Module
+
+Manages namespaced **ServiceAccount** objects (`kubernetes_service_account_v1`) providing workload identities. One per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

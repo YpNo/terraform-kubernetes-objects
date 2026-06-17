@@ -1,4 +1,7 @@
 # Mutating Webhook Configuration v1 module
+
+Manages **MutatingWebhookConfiguration** objects (`kubernetes_mutating_webhook_configuration_v1`) registering admission webhooks that can modify objects on create/update. Cluster-scoped; one per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

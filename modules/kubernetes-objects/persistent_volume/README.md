@@ -1,6 +1,9 @@
 # Persistent Volume
 
 > **Deprecated:** use the [`persistent_volume_v1`](../persistent_volume_v1) module instead. This alias targets the provider's non-versioned resource name and is kept only for backward compatibility; it will be removed in a future major release.
+
+Manages cluster-scoped **PersistentVolume** objects representing provisioned storage. One PV per entry in its `list(object)` input via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

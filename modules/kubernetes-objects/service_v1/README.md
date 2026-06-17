@@ -1,4 +1,7 @@
 # Service module for v1 version of kubernetes API
+
+Manages namespaced **Service** objects (`kubernetes_service_v1`) exposing pods over a stable virtual IP/DNS name. One Service per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

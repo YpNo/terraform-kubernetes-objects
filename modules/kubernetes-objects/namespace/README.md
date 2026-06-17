@@ -1,4 +1,7 @@
 # Namespace module
+
+Manages **Namespace** objects (`kubernetes_namespace`) — the cluster's logical tenancy boundary. Cluster-scoped; one Namespace per entry in its `list(object)` input via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

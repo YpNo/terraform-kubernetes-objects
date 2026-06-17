@@ -1,4 +1,7 @@
 # Endpoints v1 module
+
+Manages namespaced **Endpoints** objects (`kubernetes_endpoints_v1`) — explicit network endpoints behind a Service, e.g. for external or manually-managed backends. One Endpoints object per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

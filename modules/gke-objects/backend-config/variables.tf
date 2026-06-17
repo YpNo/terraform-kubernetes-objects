@@ -47,15 +47,6 @@ variable "backend_configs" {
     }))
   }))
 
-  # validation {
-  #   condition = alltrue([
-  #     for bc in var.backend_configs :
-  #     # If iap_enabled is true, then iap_rctoken_aud and iap_httpoption must not be null
-  #     !try(bc.iap_enabled,false) || (try(bc.iap_rctoken_aud, null) != null || try(bc.iap_httpoption, null) != null)
-  #   ])
-  #   error_message = "If 'iap_enabled' is true for any backend configuration, 'iap_rctoken_aud' or 'iap_httpoption' must be provided and not null."
-  # }
-
   # Example usage in a `main.tf` or `terraform.tfvars`:
   # backend_configs = [
   #   {
@@ -75,8 +66,6 @@ variable "backend_configs" {
   #     ]
   #     iap_enabled              = true
   #     iap_secret_name          = "iap-backend-config"
-  #     iap_rctoken_aud          = "your-audience-string"
-  #     iap_httpoption           = "REDIRECT_HTTP_TO_HTTPS"
   #     cloudarmor_enabled       = true
   #     cloudarmor_custom_policy = "my-custom-security-policy"
   #     custom_request_headers   = ["X-My-Request-Header: value"]

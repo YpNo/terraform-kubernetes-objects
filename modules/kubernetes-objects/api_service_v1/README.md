@@ -1,4 +1,7 @@
 # API Service v1 module
+
+Manages **APIService** registrations (`kubernetes_api_service_v1`) used to wire extension API servers into the cluster's aggregation layer. Cluster-scoped; creates one APIService per entry in its `list(object)` input via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

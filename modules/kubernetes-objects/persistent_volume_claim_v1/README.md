@@ -1,4 +1,7 @@
 # Persistent Volume Claim
+
+Manages namespaced **PersistentVolumeClaim** objects (`kubernetes_persistent_volume_claim_v1`) requesting storage for pods. One PVC per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

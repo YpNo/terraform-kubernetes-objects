@@ -1,4 +1,7 @@
 # Horizontal Pod Autoscaler module
+
+Manages **HorizontalPodAutoscaler** objects that scale a workload's replica count on observed metrics. Namespaced; one HPA per entry in its `list(object)` input via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

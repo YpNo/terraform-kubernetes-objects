@@ -1,5 +1,8 @@
 # Ingress module for v1 version of kubernetes API
 
+
+Manages namespaced **Ingress** objects (`kubernetes_ingress_v1`) exposing HTTP/HTTPS routes to Services. One Ingress per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -1,4 +1,7 @@
 # CSI Driver v1 module
+
+Manages **CSIDriver** objects (`kubernetes_csi_driver_v1`) describing how a CSI storage driver integrates with the cluster. Cluster-scoped; one CSIDriver per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

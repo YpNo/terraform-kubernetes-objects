@@ -1,4 +1,7 @@
 # UDPRoute module for Gateway API
+
+Manages Gateway API **UDPRoute** objects (`gateway.networking.k8s.io/v1alpha2`, experimental channel) that route UDP traffic to backend Services. The module renders one UDPRoute per entry in its `list(object)` input via `for_each`. These are CRDs applied through `kubernetes_manifest`, so the experimental-channel Gateway API CRDs must already be installed and the cluster must be reachable at plan time.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

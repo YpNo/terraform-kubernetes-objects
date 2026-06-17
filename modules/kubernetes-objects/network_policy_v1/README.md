@@ -1,4 +1,7 @@
 # Network Policy module
+
+Manages namespaced **NetworkPolicy** objects (`kubernetes_network_policy_v1`) controlling L3/L4 ingress and egress between pods. One policy per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

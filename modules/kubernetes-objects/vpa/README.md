@@ -1,4 +1,7 @@
 # Vertical Pod Autoscaling module
+
+Manages **VerticalPodAutoscaler** (VPA) objects that recommend or apply right-sized CPU/memory requests. Rendered as a CRD, so the VPA CRD must be installed in the cluster. Namespaced; one VPA per entry via `for_each`.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

@@ -8,7 +8,22 @@ variable "authorization_policies" {
 
     selector = optional(map(string)) # Labels to select target workloads (pods)
 
+    # Newer alternative to selector for waypoint / Gateway-API attachment (PolicyTargetReference[]).
+    # At most one of selector or target_refs should be set.
+    target_refs = optional(list(object({
+      group     = string           # e.g., "gateway.networking.k8s.io"
+      kind      = string           # e.g., "Gateway"
+      name      = string           # Name of the target resource
+      namespace = optional(string) # Namespace of the target resource
+    })), [])
+
     action = optional(string, "ALLOW") # "ALLOW", "DENY", "AUDIT", "CUSTOM"
+
+    # Required to make action = "CUSTOM" (external authorization) usable.
+    # Names a mesh-config extension provider (e.g., an ext-authz provider).
+    provider = optional(object({
+      name = string
+    }))
 
     rules = optional(list(object({                      # Logical OR of rules
       from = optional(list(object({                     # Logical AND of sources

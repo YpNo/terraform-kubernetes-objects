@@ -38,6 +38,9 @@ resource "kubernetes_deployment_v1" "this" {
             name              = container.value.name
             image             = container.value.image
             image_pull_policy = container.value.image_pull_policy
+            command           = container.value.command
+            args              = container.value.args
+            working_dir       = container.value.working_dir
 
             dynamic "port" {
               for_each = container.value.ports
@@ -55,6 +58,42 @@ resource "kubernetes_deployment_v1" "this" {
               content {
                 name  = env.value.name
                 value = env.value.value
+                dynamic "value_from" {
+                  for_each = env.value.value_from != null ? [env.value.value_from] : []
+                  content {
+                    dynamic "config_map_key_ref" {
+                      for_each = value_from.value.config_map_key_ref != null ? [value_from.value.config_map_key_ref] : []
+                      content {
+                        name     = config_map_key_ref.value.name
+                        key      = config_map_key_ref.value.key
+                        optional = config_map_key_ref.value.optional
+                      }
+                    }
+                    dynamic "secret_key_ref" {
+                      for_each = value_from.value.secret_key_ref != null ? [value_from.value.secret_key_ref] : []
+                      content {
+                        name     = secret_key_ref.value.name
+                        key      = secret_key_ref.value.key
+                        optional = secret_key_ref.value.optional
+                      }
+                    }
+                    dynamic "field_ref" {
+                      for_each = value_from.value.field_ref != null ? [value_from.value.field_ref] : []
+                      content {
+                        field_path  = field_ref.value.field_path
+                        api_version = field_ref.value.api_version
+                      }
+                    }
+                    dynamic "resource_field_ref" {
+                      for_each = value_from.value.resource_field_ref != null ? [value_from.value.resource_field_ref] : []
+                      content {
+                        resource       = resource_field_ref.value.resource
+                        container_name = resource_field_ref.value.container_name
+                        divisor        = resource_field_ref.value.divisor
+                      }
+                    }
+                  }
+                }
               }
             }
 
@@ -124,6 +163,13 @@ resource "kubernetes_deployment_v1" "this" {
                     command = exec.value.command
                   }
                 }
+                dynamic "grpc" {
+                  for_each = liveness_probe.value.grpc != null ? [liveness_probe.value.grpc] : []
+                  content {
+                    port    = grpc.value.port
+                    service = grpc.value.service
+                  }
+                }
               }
             }
 
@@ -152,6 +198,13 @@ resource "kubernetes_deployment_v1" "this" {
                   for_each = readiness_probe.value.exec != null ? [readiness_probe.value.exec] : []
                   content {
                     command = exec.value.command
+                  }
+                }
+                dynamic "grpc" {
+                  for_each = readiness_probe.value.grpc != null ? [readiness_probe.value.grpc] : []
+                  content {
+                    port    = grpc.value.port
+                    service = grpc.value.service
                   }
                 }
               }
@@ -212,6 +265,71 @@ resource "kubernetes_deployment_v1" "this" {
                     command = exec.value.command
                   }
                 }
+                dynamic "grpc" {
+                  for_each = startup_probe.value.grpc != null ? [startup_probe.value.grpc] : []
+                  content {
+                    port    = grpc.value.port
+                    service = grpc.value.service
+                  }
+                }
+              }
+            }
+
+            dynamic "lifecycle" {
+              for_each = container.value.lifecycle != null ? [container.value.lifecycle] : []
+              content {
+                dynamic "post_start" {
+                  for_each = lifecycle.value.post_start != null ? [lifecycle.value.post_start] : []
+                  content {
+                    dynamic "exec" {
+                      for_each = post_start.value.exec != null ? [post_start.value.exec] : []
+                      content {
+                        command = exec.value.command
+                      }
+                    }
+                    dynamic "http_get" {
+                      for_each = post_start.value.http_get != null ? [post_start.value.http_get] : []
+                      content {
+                        path   = http_get.value.path
+                        port   = http_get.value.port
+                        host   = http_get.value.host
+                        scheme = http_get.value.scheme
+                      }
+                    }
+                    dynamic "tcp_socket" {
+                      for_each = post_start.value.tcp_socket != null ? [post_start.value.tcp_socket] : []
+                      content {
+                        port = tcp_socket.value.port
+                      }
+                    }
+                  }
+                }
+                dynamic "pre_stop" {
+                  for_each = lifecycle.value.pre_stop != null ? [lifecycle.value.pre_stop] : []
+                  content {
+                    dynamic "exec" {
+                      for_each = pre_stop.value.exec != null ? [pre_stop.value.exec] : []
+                      content {
+                        command = exec.value.command
+                      }
+                    }
+                    dynamic "http_get" {
+                      for_each = pre_stop.value.http_get != null ? [pre_stop.value.http_get] : []
+                      content {
+                        path   = http_get.value.path
+                        port   = http_get.value.port
+                        host   = http_get.value.host
+                        scheme = http_get.value.scheme
+                      }
+                    }
+                    dynamic "tcp_socket" {
+                      for_each = pre_stop.value.tcp_socket != null ? [pre_stop.value.tcp_socket] : []
+                      content {
+                        port = tcp_socket.value.port
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -224,14 +342,91 @@ resource "kubernetes_deployment_v1" "this" {
             name              = init_container.value.name
             image             = init_container.value.image
             image_pull_policy = init_container.value.image_pull_policy
+            command           = init_container.value.command
+            args              = init_container.value.args
+            working_dir       = init_container.value.working_dir
+            restart_policy    = init_container.value.restart_policy
+
+            dynamic "port" {
+              for_each = init_container.value.ports
+              content {
+                container_port = port.value.container_port
+                name           = port.value.name
+                protocol       = port.value.protocol
+              }
+            }
 
             dynamic "env" {
               for_each = init_container.value.env
               content {
                 name  = env.value.name
                 value = env.value.value
+                dynamic "value_from" {
+                  for_each = env.value.value_from != null ? [env.value.value_from] : []
+                  content {
+                    dynamic "config_map_key_ref" {
+                      for_each = value_from.value.config_map_key_ref != null ? [value_from.value.config_map_key_ref] : []
+                      content {
+                        name     = config_map_key_ref.value.name
+                        key      = config_map_key_ref.value.key
+                        optional = config_map_key_ref.value.optional
+                      }
+                    }
+                    dynamic "secret_key_ref" {
+                      for_each = value_from.value.secret_key_ref != null ? [value_from.value.secret_key_ref] : []
+                      content {
+                        name     = secret_key_ref.value.name
+                        key      = secret_key_ref.value.key
+                        optional = secret_key_ref.value.optional
+                      }
+                    }
+                    dynamic "field_ref" {
+                      for_each = value_from.value.field_ref != null ? [value_from.value.field_ref] : []
+                      content {
+                        field_path  = field_ref.value.field_path
+                        api_version = field_ref.value.api_version
+                      }
+                    }
+                    dynamic "resource_field_ref" {
+                      for_each = value_from.value.resource_field_ref != null ? [value_from.value.resource_field_ref] : []
+                      content {
+                        resource       = resource_field_ref.value.resource
+                        container_name = resource_field_ref.value.container_name
+                        divisor        = resource_field_ref.value.divisor
+                      }
+                    }
+                  }
+                }
               }
             }
+
+            dynamic "env_from" {
+              for_each = init_container.value.env_from
+              content {
+                prefix = env_from.value.prefix
+                dynamic "config_map_ref" {
+                  for_each = env_from.value.config_map_ref != null ? [env_from.value.config_map_ref] : []
+                  content {
+                    name = config_map_ref.value.name
+                  }
+                }
+                dynamic "secret_ref" {
+                  for_each = env_from.value.secret_ref != null ? [env_from.value.secret_ref] : []
+                  content {
+                    name = secret_ref.value.name
+                  }
+                }
+              }
+            }
+
+            dynamic "resources" {
+              for_each = init_container.value.resources != null ? [init_container.value.resources] : []
+              content {
+                limits   = resources.value.limits
+                requests = resources.value.requests
+              }
+            }
+
             dynamic "volume_mount" {
               for_each = init_container.value.volume_mounts
               content {
@@ -239,6 +434,145 @@ resource "kubernetes_deployment_v1" "this" {
                 mount_path = volume_mount.value.mount_path
                 read_only  = volume_mount.value.read_only
                 sub_path   = volume_mount.value.sub_path
+              }
+            }
+
+            dynamic "liveness_probe" {
+              for_each = init_container.value.liveness_probe != null ? [init_container.value.liveness_probe] : []
+              content {
+                initial_delay_seconds = liveness_probe.value.initial_delay_seconds
+                period_seconds        = liveness_probe.value.period_seconds
+                timeout_seconds       = liveness_probe.value.timeout_seconds
+                success_threshold     = liveness_probe.value.success_threshold
+                failure_threshold     = liveness_probe.value.failure_threshold
+                dynamic "http_get" {
+                  for_each = liveness_probe.value.http_get != null ? [liveness_probe.value.http_get] : []
+                  content {
+                    path = http_get.value.path
+                    port = http_get.value.port
+                  }
+                }
+                dynamic "tcp_socket" {
+                  for_each = liveness_probe.value.tcp_socket != null ? [liveness_probe.value.tcp_socket] : []
+                  content {
+                    port = tcp_socket.value.port
+                  }
+                }
+                dynamic "exec" {
+                  for_each = liveness_probe.value.exec != null ? [liveness_probe.value.exec] : []
+                  content {
+                    command = exec.value.command
+                  }
+                }
+                dynamic "grpc" {
+                  for_each = liveness_probe.value.grpc != null ? [liveness_probe.value.grpc] : []
+                  content {
+                    port    = grpc.value.port
+                    service = grpc.value.service
+                  }
+                }
+              }
+            }
+
+            dynamic "readiness_probe" {
+              for_each = init_container.value.readiness_probe != null ? [init_container.value.readiness_probe] : []
+              content {
+                initial_delay_seconds = readiness_probe.value.initial_delay_seconds
+                period_seconds        = readiness_probe.value.period_seconds
+                timeout_seconds       = readiness_probe.value.timeout_seconds
+                success_threshold     = readiness_probe.value.success_threshold
+                failure_threshold     = readiness_probe.value.failure_threshold
+                dynamic "http_get" {
+                  for_each = readiness_probe.value.http_get != null ? [readiness_probe.value.http_get] : []
+                  content {
+                    path = http_get.value.path
+                    port = http_get.value.port
+                  }
+                }
+                dynamic "tcp_socket" {
+                  for_each = readiness_probe.value.tcp_socket != null ? [readiness_probe.value.tcp_socket] : []
+                  content {
+                    port = tcp_socket.value.port
+                  }
+                }
+                dynamic "exec" {
+                  for_each = readiness_probe.value.exec != null ? [readiness_probe.value.exec] : []
+                  content {
+                    command = exec.value.command
+                  }
+                }
+                dynamic "grpc" {
+                  for_each = readiness_probe.value.grpc != null ? [readiness_probe.value.grpc] : []
+                  content {
+                    port    = grpc.value.port
+                    service = grpc.value.service
+                  }
+                }
+              }
+            }
+
+            dynamic "startup_probe" {
+              for_each = init_container.value.startup_probe != null ? [init_container.value.startup_probe] : []
+              content {
+                initial_delay_seconds = startup_probe.value.initial_delay_seconds
+                period_seconds        = startup_probe.value.period_seconds
+                timeout_seconds       = startup_probe.value.timeout_seconds
+                success_threshold     = startup_probe.value.success_threshold
+                failure_threshold     = startup_probe.value.failure_threshold
+                dynamic "http_get" {
+                  for_each = startup_probe.value.http_get != null ? [startup_probe.value.http_get] : []
+                  content {
+                    path = http_get.value.path
+                    port = http_get.value.port
+                  }
+                }
+                dynamic "tcp_socket" {
+                  for_each = startup_probe.value.tcp_socket != null ? [startup_probe.value.tcp_socket] : []
+                  content {
+                    port = tcp_socket.value.port
+                  }
+                }
+                dynamic "exec" {
+                  for_each = startup_probe.value.exec != null ? [startup_probe.value.exec] : []
+                  content {
+                    command = exec.value.command
+                  }
+                }
+                dynamic "grpc" {
+                  for_each = startup_probe.value.grpc != null ? [startup_probe.value.grpc] : []
+                  content {
+                    port    = grpc.value.port
+                    service = grpc.value.service
+                  }
+                }
+              }
+            }
+
+            dynamic "security_context" {
+              for_each = init_container.value.security_context != null ? [init_container.value.security_context] : []
+              content {
+                run_as_user                = security_context.value.run_as_user
+                run_as_group               = security_context.value.run_as_group
+                run_as_non_root            = security_context.value.run_as_non_root
+                allow_privilege_escalation = security_context.value.allow_privilege_escalation
+
+                dynamic "se_linux_options" {
+                  for_each = security_context.value.se_linux_options != null ? [security_context.value.se_linux_options] : []
+                  content {
+                    level = se_linux_options.value.level
+                    role  = se_linux_options.value.role
+                    type  = se_linux_options.value.type
+                    user  = se_linux_options.value.user
+                  }
+                }
+
+                dynamic "seccomp_profile" {
+                  for_each = security_context.value.seccomp_profile != null ? [security_context.value.seccomp_profile] : []
+                  content {
+                    type              = seccomp_profile.value.type
+                    localhost_profile = seccomp_profile.value.localhost_profile
+                  }
+                }
               }
             }
           }
@@ -284,6 +618,125 @@ resource "kubernetes_deployment_v1" "this" {
                 }
               }
             }
+            dynamic "host_path" {
+              for_each = volume.value.host_path != null ? [volume.value.host_path] : []
+              content {
+                path = host_path.value.path
+                type = host_path.value.type
+              }
+            }
+            dynamic "nfs" {
+              for_each = volume.value.nfs != null ? [volume.value.nfs] : []
+              content {
+                server    = nfs.value.server
+                path      = nfs.value.path
+                read_only = nfs.value.read_only
+              }
+            }
+            dynamic "downward_api" {
+              for_each = volume.value.downward_api != null ? [volume.value.downward_api] : []
+              content {
+                default_mode = downward_api.value.default_mode
+                dynamic "items" {
+                  for_each = downward_api.value.items
+                  content {
+                    path = items.value.path
+                    mode = items.value.mode
+                    dynamic "field_ref" {
+                      for_each = items.value.field_ref != null ? [items.value.field_ref] : []
+                      content {
+                        field_path  = field_ref.value.field_path
+                        api_version = field_ref.value.api_version
+                      }
+                    }
+                    dynamic "resource_field_ref" {
+                      for_each = items.value.resource_field_ref != null ? [items.value.resource_field_ref] : []
+                      content {
+                        resource       = resource_field_ref.value.resource
+                        container_name = resource_field_ref.value.container_name
+                        divisor        = resource_field_ref.value.divisor
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            dynamic "projected" {
+              for_each = volume.value.projected != null ? [volume.value.projected] : []
+              content {
+                default_mode = projected.value.default_mode
+                dynamic "sources" {
+                  for_each = projected.value.sources
+                  content {
+                    dynamic "config_map" {
+                      for_each = sources.value.config_map != null ? [sources.value.config_map] : []
+                      content {
+                        name     = config_map.value.name
+                        optional = config_map.value.optional
+                        dynamic "items" {
+                          for_each = config_map.value.items
+                          content {
+                            key  = items.value.key
+                            path = items.value.path
+                            mode = items.value.mode
+                          }
+                        }
+                      }
+                    }
+                    dynamic "secret" {
+                      for_each = sources.value.secret != null ? [sources.value.secret] : []
+                      content {
+                        name     = secret.value.name
+                        optional = secret.value.optional
+                        dynamic "items" {
+                          for_each = secret.value.items
+                          content {
+                            key  = items.value.key
+                            path = items.value.path
+                            mode = items.value.mode
+                          }
+                        }
+                      }
+                    }
+                    dynamic "downward_api" {
+                      for_each = sources.value.downward_api != null ? [sources.value.downward_api] : []
+                      content {
+                        dynamic "items" {
+                          for_each = downward_api.value.items
+                          content {
+                            path = items.value.path
+                            mode = items.value.mode
+                            dynamic "field_ref" {
+                              for_each = items.value.field_ref != null ? [items.value.field_ref] : []
+                              content {
+                                field_path  = field_ref.value.field_path
+                                api_version = field_ref.value.api_version
+                              }
+                            }
+                            dynamic "resource_field_ref" {
+                              for_each = items.value.resource_field_ref != null ? [items.value.resource_field_ref] : []
+                              content {
+                                resource       = resource_field_ref.value.resource
+                                container_name = resource_field_ref.value.container_name
+                                divisor        = resource_field_ref.value.divisor
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                    dynamic "service_account_token" {
+                      for_each = sources.value.service_account_token != null ? [sources.value.service_account_token] : []
+                      content {
+                        path               = service_account_token.value.path
+                        audience           = service_account_token.value.audience
+                        expiration_seconds = service_account_token.value.expiration_seconds
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
 
@@ -296,11 +749,24 @@ resource "kubernetes_deployment_v1" "this" {
         }
 
         service_account_name             = each.value.service_account_name
+        automount_service_account_token  = each.value.automount_service_account_token
         dns_policy                       = each.value.dns_policy
         node_selector                    = each.value.node_selector
         priority_class_name              = each.value.priority_class_name
+        runtime_class_name               = each.value.runtime_class_name
         restart_policy                   = each.value.restart_policy
         termination_grace_period_seconds = each.value.termination_grace_period_seconds
+        host_network                     = each.value.host_network
+        host_pid                         = each.value.host_pid
+        host_ipc                         = each.value.host_ipc
+
+        dynamic "host_aliases" {
+          for_each = each.value.host_aliases
+          content {
+            ip        = host_aliases.value.ip
+            hostnames = host_aliases.value.hostnames
+          }
+        }
 
         dynamic "affinity" {
           for_each = each.value.affinity != null ? [each.value.affinity] : []

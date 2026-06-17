@@ -81,6 +81,11 @@ resource "kubernetes_manifest" "backend_config" {
       each.value.timeout_sec != null ? {
         "timeoutSec" = each.value.timeout_sec
       } : {},
+      each.value.connection_draining != null ? {
+        "connectionDraining" = {
+          "drainingTimeoutSec" = each.value.connection_draining.draining_timeout_sec
+        }
+      } : {},
     )
   }
 

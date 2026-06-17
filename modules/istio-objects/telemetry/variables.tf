@@ -31,7 +31,7 @@ variable "telemetries" {
     tracing = optional(list(object({
       providers = optional(list(string), [])
       sampling  = optional(object({ percent = number }))
-      
+
       # CORRECTION ICI : Définition explicite de l'objet au lieu de local.custom_tag_value_type
       custom_tags = optional(map(object({
         literal     = optional(object({ value = string }))
@@ -75,7 +75,7 @@ variable "telemetries" {
     ])
     error_message = "Invalid 'encoding' for Telemetry access logging. Must be 'JSON' or 'TEXT'."
   }
-  
+
   validation {
     condition = alltrue([
       for tm_item in var.telemetries :

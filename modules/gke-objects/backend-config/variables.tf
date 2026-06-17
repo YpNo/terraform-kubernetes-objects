@@ -42,6 +42,9 @@ variable "backend_configs" {
       cookie_ttl_sec = optional(number) # Required if type is GENERATED_COOKIE
     }))
     timeout_sec = optional(number, 30)
+    connection_draining = optional(object({
+      draining_timeout_sec = number # Time in seconds to drain connections, 0 to 3600
+    }))
   }))
 
   # validation {

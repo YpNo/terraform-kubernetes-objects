@@ -16,6 +16,7 @@ resource "kubernetes_manifest" "this" {
       {
         "host" = each.value.host
       },
+      each.value.workload_selector != null ? { "workloadSelector" = { "matchLabels" = each.value.workload_selector } } : {},
       each.value.traffic_policy != null ? {
         "trafficPolicy" = merge(
           each.value.traffic_policy.load_balancer != null ? {
@@ -33,6 +34,19 @@ resource "kubernetes_manifest" "this" {
                   } : {},
                   each.value.traffic_policy.load_balancer.consistent_hash.use_source_ip != null ? { "useSourceIp" = each.value.traffic_policy.load_balancer.consistent_hash.use_source_ip } : {},
                   each.value.traffic_policy.load_balancer.consistent_hash.http_query_parameter != null ? { "httpQueryParameter" = each.value.traffic_policy.load_balancer.consistent_hash.http_query_parameter } : {},
+                )
+              } : {},
+              each.value.traffic_policy.load_balancer.warmup_duration_secs != null ? { "warmupDurationSecs" = each.value.traffic_policy.load_balancer.warmup_duration_secs } : {},
+              each.value.traffic_policy.load_balancer.locality_lb_setting != null ? {
+                "localityLbSetting" = merge(
+                  each.value.traffic_policy.load_balancer.locality_lb_setting.enabled != null ? { "enabled" = each.value.traffic_policy.load_balancer.locality_lb_setting.enabled } : {},
+                  length(each.value.traffic_policy.load_balancer.locality_lb_setting.distribute) > 0 ? {
+                    "distribute" = [for d in each.value.traffic_policy.load_balancer.locality_lb_setting.distribute : { "from" = d.from, "to" = d.to }]
+                  } : {},
+                  length(each.value.traffic_policy.load_balancer.locality_lb_setting.failover) > 0 ? {
+                    "failover" = [for f in each.value.traffic_policy.load_balancer.locality_lb_setting.failover : { "from" = f.from, "to" = f.to }]
+                  } : {},
+                  length(each.value.traffic_policy.load_balancer.locality_lb_setting.failover_priority) > 0 ? { "failoverPriority" = each.value.traffic_policy.load_balancer.locality_lb_setting.failover_priority } : {},
                 )
               } : {},
             )
@@ -72,6 +86,9 @@ resource "kubernetes_manifest" "this" {
               each.value.traffic_policy.outlier_detection.base_ejection_time != null ? { "baseEjectionTime" = each.value.traffic_policy.outlier_detection.base_ejection_time } : {},
               each.value.traffic_policy.outlier_detection.max_ejection_percent != null ? { "maxEjectionPercent" = each.value.traffic_policy.outlier_detection.max_ejection_percent } : {},
               each.value.traffic_policy.outlier_detection.consecutive_errors != null ? { "consecutiveErrors" = each.value.traffic_policy.outlier_detection.consecutive_errors } : {},
+              each.value.traffic_policy.outlier_detection.consecutive_local_origin_failures != null ? { "consecutiveLocalOriginFailures" = each.value.traffic_policy.outlier_detection.consecutive_local_origin_failures } : {},
+              each.value.traffic_policy.outlier_detection.split_external_local_origin_errors != null ? { "splitExternalLocalOriginErrors" = each.value.traffic_policy.outlier_detection.split_external_local_origin_errors } : {},
+              each.value.traffic_policy.outlier_detection.min_health_percent != null ? { "minHealthPercent" = each.value.traffic_policy.outlier_detection.min_health_percent } : {},
             )
           } : {},
           each.value.traffic_policy.tls != null ? {
@@ -141,6 +158,9 @@ resource "kubernetes_manifest" "this" {
                   pls.outlier_detection.base_ejection_time != null ? { "baseEjectionTime" = pls.outlier_detection.base_ejection_time } : {},
                   pls.outlier_detection.max_ejection_percent != null ? { "maxEjectionPercent" = pls.outlier_detection.max_ejection_percent } : {},
                   pls.outlier_detection.consecutive_errors != null ? { "consecutiveErrors" = pls.outlier_detection.consecutive_errors } : {},
+                  pls.outlier_detection.consecutive_local_origin_failures != null ? { "consecutiveLocalOriginFailures" = pls.outlier_detection.consecutive_local_origin_failures } : {},
+                  pls.outlier_detection.split_external_local_origin_errors != null ? { "splitExternalLocalOriginErrors" = pls.outlier_detection.split_external_local_origin_errors } : {},
+                  pls.outlier_detection.min_health_percent != null ? { "minHealthPercent" = pls.outlier_detection.min_health_percent } : {},
                 ) } : {}),
                 (pls.tls != null ? { "tls" = merge(
                   { "mode" = pls.tls.mode },
@@ -185,6 +205,19 @@ resource "kubernetes_manifest" "this" {
                         subset.traffic_policy.load_balancer.consistent_hash.http_query_parameter != null ? { "httpQueryParameter" = subset.traffic_policy.load_balancer.consistent_hash.http_query_parameter } : {},
                       )
                     } : {},
+                    subset.traffic_policy.load_balancer.warmup_duration_secs != null ? { "warmupDurationSecs" = subset.traffic_policy.load_balancer.warmup_duration_secs } : {},
+                    subset.traffic_policy.load_balancer.locality_lb_setting != null ? {
+                      "localityLbSetting" = merge(
+                        subset.traffic_policy.load_balancer.locality_lb_setting.enabled != null ? { "enabled" = subset.traffic_policy.load_balancer.locality_lb_setting.enabled } : {},
+                        length(subset.traffic_policy.load_balancer.locality_lb_setting.distribute) > 0 ? {
+                          "distribute" = [for d in subset.traffic_policy.load_balancer.locality_lb_setting.distribute : { "from" = d.from, "to" = d.to }]
+                        } : {},
+                        length(subset.traffic_policy.load_balancer.locality_lb_setting.failover) > 0 ? {
+                          "failover" = [for f in subset.traffic_policy.load_balancer.locality_lb_setting.failover : { "from" = f.from, "to" = f.to }]
+                        } : {},
+                        length(subset.traffic_policy.load_balancer.locality_lb_setting.failover_priority) > 0 ? { "failoverPriority" = subset.traffic_policy.load_balancer.locality_lb_setting.failover_priority } : {},
+                      )
+                    } : {},
                   )
                 } : {},
                 subset.traffic_policy.connection_pool != null ? {
@@ -222,6 +255,9 @@ resource "kubernetes_manifest" "this" {
                     subset.traffic_policy.outlier_detection.base_ejection_time != null ? { "baseEjectionTime" = subset.traffic_policy.outlier_detection.base_ejection_time } : {},
                     subset.traffic_policy.outlier_detection.max_ejection_percent != null ? { "maxEjectionPercent" = subset.traffic_policy.outlier_detection.max_ejection_percent } : {},
                     subset.traffic_policy.outlier_detection.consecutive_errors != null ? { "consecutiveErrors" = subset.traffic_policy.outlier_detection.consecutive_errors } : {},
+                    subset.traffic_policy.outlier_detection.consecutive_local_origin_failures != null ? { "consecutiveLocalOriginFailures" = subset.traffic_policy.outlier_detection.consecutive_local_origin_failures } : {},
+                    subset.traffic_policy.outlier_detection.split_external_local_origin_errors != null ? { "splitExternalLocalOriginErrors" = subset.traffic_policy.outlier_detection.split_external_local_origin_errors } : {},
+                    subset.traffic_policy.outlier_detection.min_health_percent != null ? { "minHealthPercent" = subset.traffic_policy.outlier_detection.min_health_percent } : {},
                   )
                 } : {},
                 subset.traffic_policy.tls != null ? {
@@ -292,6 +328,9 @@ resource "kubernetes_manifest" "this" {
                         pls.outlier_detection.base_ejection_time != null ? { "baseEjectionTime" = pls.outlier_detection.base_ejection_time } : {},
                         pls.outlier_detection.max_ejection_percent != null ? { "maxEjectionPercent" = pls.outlier_detection.max_ejection_percent } : {},
                         pls.outlier_detection.consecutive_errors != null ? { "consecutiveErrors" = pls.outlier_detection.consecutive_errors } : {},
+                        pls.outlier_detection.consecutive_local_origin_failures != null ? { "consecutiveLocalOriginFailures" = pls.outlier_detection.consecutive_local_origin_failures } : {},
+                        pls.outlier_detection.split_external_local_origin_errors != null ? { "splitExternalLocalOriginErrors" = pls.outlier_detection.split_external_local_origin_errors } : {},
+                        pls.outlier_detection.min_health_percent != null ? { "minHealthPercent" = pls.outlier_detection.min_health_percent } : {},
                       ) } : {},
                       pls.tls != null ? { "tls" = merge(
                         { "mode" = pls.tls.mode },

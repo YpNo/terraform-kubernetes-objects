@@ -19,6 +19,7 @@ variable "gateways" {
           name      = string
           namespace = optional(string)
         }))
+        options = optional(map(string)) # implementation-specific, e.g. GKE SSL policy
       }))
       allowed_routes = optional(object({
         namespaces = optional(object({
@@ -37,6 +38,15 @@ variable "gateways" {
       type  = string # "NamedAddress" or "IPAddress"
       value = string
     })), [])
+    infrastructure = optional(object({
+      labels      = optional(map(string))
+      annotations = optional(map(string))
+      parameters_ref = optional(object({
+        group = string
+        kind  = string
+        name  = string
+      }))
+    }))
   }))
   default = []
 }

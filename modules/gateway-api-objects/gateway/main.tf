@@ -28,6 +28,7 @@ resource "kubernetes_manifest" "this" {
                 "namespace" = cert.namespace
               }
             ]
+            "options" = listener.tls.options
           } : null
           "allowedRoutes" = listener.allowed_routes != null ? {
             "namespaces" = listener.allowed_routes.namespaces != null ? {
@@ -51,6 +52,15 @@ resource "kubernetes_manifest" "this" {
           "value" = address.value
         }
       ]
+      "infrastructure" = each.value.infrastructure != null ? {
+        "labels"      = each.value.infrastructure.labels
+        "annotations" = each.value.infrastructure.annotations
+        "parametersRef" = each.value.infrastructure.parameters_ref != null ? {
+          "group" = each.value.infrastructure.parameters_ref.group
+          "kind"  = each.value.infrastructure.parameters_ref.kind
+          "name"  = each.value.infrastructure.parameters_ref.name
+        } : null
+      } : null
     }
   }
 

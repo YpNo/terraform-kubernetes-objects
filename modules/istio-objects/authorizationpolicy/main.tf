@@ -14,7 +14,20 @@ resource "kubernetes_manifest" "this" {
     )
     "spec" = merge(
       each.value.selector != null ? { "selector" = { "matchLabels" = each.value.selector } } : {},
+      length(each.value.target_refs) > 0 ? {
+        "targetRefs" = [
+          for tr in each.value.target_refs : merge(
+            {
+              "group" = tr.group
+              "kind"  = tr.kind
+              "name"  = tr.name
+            },
+            tr.namespace != null ? { "namespace" = tr.namespace } : {},
+          )
+        ]
+      } : {},
       each.value.action != null ? { "action" = each.value.action } : {},
+      each.value.provider != null ? { "provider" = { "name" = each.value.provider.name } } : {},
       # Rules
       length(each.value.rules) > 0 ? {
         "rules" = [

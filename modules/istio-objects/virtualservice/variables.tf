@@ -84,6 +84,29 @@ variable "virtual_services" {
         allow_credentials = optional(bool)
       }))
 
+      # HTTP header manipulation applied at the route level.
+      headers = optional(object({
+        request = optional(object({
+          set    = optional(map(string), {})  # Overwrite headers with the given values
+          add    = optional(map(string), {})  # Append values to existing headers
+          remove = optional(list(string), []) # Remove the specified headers
+        }))
+        response = optional(object({
+          set    = optional(map(string), {})
+          add    = optional(map(string), {})
+          remove = optional(list(string), [])
+        }))
+      }))
+
+      # Return a fixed response directly (mutually exclusive with route/redirect/delegate).
+      direct_response = optional(object({
+        status = number # HTTP status code (e.g., 200, 503)
+        body = optional(object({
+          string = optional(string) # UTF-8 encoded response body
+          bytes  = optional(string) # Base64 encoded binary response body
+        }))
+      }))
+
     })), [])
 
     # TLS rules
@@ -129,13 +152,14 @@ variable "virtual_services" {
         # Ensure only one of 'route', 'redirect', or 'delegate' is specified as the primary routing action.
         # 'rewrite' can coexist with 'route', 'fault', 'mirror', 'timeout', 'retries', 'cors_policy'.
         length(compact([
-          length(http_rule.route) > 0 ? true : null, # Check if 'route' list is not empty
-          http_rule.redirect != null ? true : null,  # Check if 'redirect' object is defined
-          http_rule.delegate != null ? true : null   # Check if 'delegate' object is defined
-        ])) <= 1                                     # Allows 0 (no primary action, e.g., if only a fault is defined) or 1 primary action.
+          length(http_rule.route) > 0 ? true : null,      # Check if 'route' list is not empty
+          http_rule.redirect != null ? true : null,       # Check if 'redirect' object is defined
+          http_rule.delegate != null ? true : null,       # Check if 'delegate' object is defined
+          http_rule.direct_response != null ? true : null # Check if 'direct_response' object is defined
+        ])) <= 1                                          # Allows 0 (no primary action, e.g., if only a fault is defined) or 1 primary action.
       ])
     ])
-    error_message = "For each HTTP rule, only one of 'route', 'redirect', or 'delegate' can be specified as the primary routing action. 'rewrite' is a transformation and can be used with 'route'."
+    error_message = "For each HTTP rule, only one of 'route', 'redirect', 'delegate', or 'direct_response' can be specified as the primary routing action. 'rewrite' is a transformation and can be used with 'route'."
   }
 
   validation {

@@ -125,6 +125,35 @@ resource "kubernetes_manifest" "this" {
                 http_rule.cors_policy.max_age != null ? { "maxAge" = http_rule.cors_policy.max_age } : {},
                 http_rule.cors_policy.allow_credentials != null ? { "allowCredentials" = http_rule.cors_policy.allow_credentials } : {},
               )
+            } : {},
+            http_rule.headers != null ? {
+              "headers" = merge(
+                http_rule.headers.request != null ? {
+                  "request" = merge(
+                    length(http_rule.headers.request.set) > 0 ? { "set" = http_rule.headers.request.set } : {},
+                    length(http_rule.headers.request.add) > 0 ? { "add" = http_rule.headers.request.add } : {},
+                    length(http_rule.headers.request.remove) > 0 ? { "remove" = http_rule.headers.request.remove } : {},
+                  )
+                } : {},
+                http_rule.headers.response != null ? {
+                  "response" = merge(
+                    length(http_rule.headers.response.set) > 0 ? { "set" = http_rule.headers.response.set } : {},
+                    length(http_rule.headers.response.add) > 0 ? { "add" = http_rule.headers.response.add } : {},
+                    length(http_rule.headers.response.remove) > 0 ? { "remove" = http_rule.headers.response.remove } : {},
+                  )
+                } : {},
+              )
+            } : {},
+            http_rule.direct_response != null ? {
+              "directResponse" = merge(
+                { "status" = http_rule.direct_response.status },
+                http_rule.direct_response.body != null ? {
+                  "body" = merge(
+                    http_rule.direct_response.body.string != null ? { "string" = http_rule.direct_response.body.string } : {},
+                    http_rule.direct_response.body.bytes != null ? { "bytes" = http_rule.direct_response.body.bytes } : {},
+                  )
+                } : {},
+              )
             } : {}
           )
         ]

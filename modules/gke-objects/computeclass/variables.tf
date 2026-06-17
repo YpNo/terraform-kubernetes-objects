@@ -10,9 +10,9 @@ variable "compute_classes" {
       whenUnsatisfiable    = optional(string)
     }))
     autoscaling_policy = optional(object({
-      consolidationDelayMinutes = optional(number)
-      consolidationThreshold    = optional(number)
-      gpuConsolidationThreshold = optional(number)
+      consolidation_delay_minutes = optional(number)
+      consolidation_threshold     = optional(number)
+      gpu_consolidation_threshold = optional(number)
     }), {})
     node_pool_auto_creation_enabled = optional(bool, true)
     priority_defaults = optional(object({
@@ -30,9 +30,19 @@ variable "compute_classes" {
       min_cores      = optional(number)
       min_memory_gb  = optional(number)
       spot           = optional(bool)
+      flex_start     = optional(bool)         # request short-lived nodes provisioned via DWS Flex-start
+      priority_score = optional(number)       # relative priority score for this rule
+      nodepools      = optional(list(string)) # GKE Standard: existing node pool names to select
       gpu = optional(object({
         type  = string
         count = number
+      }))
+      reservations = optional(object({
+        affinity = string # ANY_RESERVATION | SPECIFIC_RESERVATION | NO_RESERVATION
+        specific = optional(list(object({
+          name              = string
+          reservation_block = optional(string)
+        })))
       }))
     }))
   }))

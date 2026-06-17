@@ -1,4 +1,6 @@
 # Priority Class
+
+> **Deprecated:** use the [`priorityclass_v1`](../priorityclass_v1) module instead. This alias targets the provider's non-versioned resource name and is kept only for backward compatibility; it will be removed in a future major release.
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

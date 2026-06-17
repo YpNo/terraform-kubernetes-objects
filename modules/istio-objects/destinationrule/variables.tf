@@ -7,6 +7,9 @@ variable "destination_rules" {
     annotations = optional(map(string))
     host        = string # The service host to which the traffic policy/subsets apply (e.g., "my-service.my-namespace.svc.cluster.local" or "my-service")
 
+    # Criteria to select the specific set of pods/VMs on which this DestinationRule applies.
+    workload_selector = optional(map(string)) # matchLabels
+
     # Inlined traffic_policy_type
     traffic_policy = optional(object({
       # Inlined load_balancer_type
@@ -23,6 +26,20 @@ variable "destination_rules" {
           }))
           use_source_ip        = optional(bool)
           http_query_parameter = optional(string)
+        }))
+        warmup_duration_secs = optional(string) # Duration of slow-start warmup (e.g., "60s")
+        # Inlined locality_lb_setting_type
+        locality_lb_setting = optional(object({
+          enabled = optional(bool) # Enable locality load balancing
+          distribute = optional(list(object({
+            from = string      # Source locality (e.g., "region/zone/subzone")
+            to   = map(number) # Destination localities with weights
+          })), [])
+          failover = optional(list(object({
+            from = string # Source region
+            to   = string # Failover region
+          })), [])
+          failover_priority = optional(list(string), []) # Locality label keys for failover priority
         }))
       }))
       # Inlined connection_pool_type
@@ -50,12 +67,15 @@ variable "destination_rules" {
       }))
       # Inlined outlier_detection_type
       outlier_detection = optional(object({
-        consecutive_5xx_errors     = optional(number)
-        consecutive_gateway_errors = optional(number) # Deprecated in favor of consecutive_5xx_errors in newer Istio
-        interval                   = optional(string) # e.g., "10s"
-        base_ejection_time         = optional(string) # e.g., "30s"
-        max_ejection_percent       = optional(number) # 0-100
-        consecutive_errors         = optional(number) # Generic consecutive errors
+        consecutive_5xx_errors             = optional(number)
+        consecutive_gateway_errors         = optional(number) # Deprecated in favor of consecutive_5xx_errors in newer Istio
+        consecutive_local_origin_failures  = optional(number) # Number of local origin failures before ejection
+        interval                           = optional(string) # e.g., "10s"
+        base_ejection_time                 = optional(string) # e.g., "30s"
+        max_ejection_percent               = optional(number) # 0-100
+        consecutive_errors                 = optional(number) # Generic consecutive errors
+        split_external_local_origin_errors = optional(bool)   # Distinguish local origin failures from upstream errors
+        min_health_percent                 = optional(number) # 0-100, panic threshold below which ejection stops
       }))
       # Inlined tls_client_settings_type
       tls = optional(object({
@@ -114,12 +134,15 @@ variable "destination_rules" {
         }))
         # Inlined outlier_detection_type
         outlier_detection = optional(object({
-          consecutive_5xx_errors     = optional(number)
-          consecutive_gateway_errors = optional(number) # Deprecated in favor of consecutive_5xx_errors in newer Istio
-          interval                   = optional(string) # e.g., "10s"
-          base_ejection_time         = optional(string) # e.g., "30s"
-          max_ejection_percent       = optional(number) # 0-100
-          consecutive_errors         = optional(number) # Generic consecutive errors
+          consecutive_5xx_errors             = optional(number)
+          consecutive_gateway_errors         = optional(number) # Deprecated in favor of consecutive_5xx_errors in newer Istio
+          consecutive_local_origin_failures  = optional(number) # Number of local origin failures before ejection
+          interval                           = optional(string) # e.g., "10s"
+          base_ejection_time                 = optional(string) # e.g., "30s"
+          max_ejection_percent               = optional(number) # 0-100
+          consecutive_errors                 = optional(number) # Generic consecutive errors
+          split_external_local_origin_errors = optional(bool)   # Distinguish local origin failures from upstream errors
+          min_health_percent                 = optional(number) # 0-100, panic threshold below which ejection stops
         }))
         # Inlined tls_client_settings_type
         tls = optional(object({
@@ -183,12 +206,15 @@ variable "destination_rules" {
         }))
         # Inlined outlier_detection_type
         outlier_detection = optional(object({
-          consecutive_5xx_errors     = optional(number)
-          consecutive_gateway_errors = optional(number) # Deprecated in favor of consecutive_5xx_errors in newer Istio
-          interval                   = optional(string) # e.g., "10s"
-          base_ejection_time         = optional(string) # e.g., "30s"
-          max_ejection_percent       = optional(number) # 0-100
-          consecutive_errors         = optional(number) # Generic consecutive errors
+          consecutive_5xx_errors             = optional(number)
+          consecutive_gateway_errors         = optional(number) # Deprecated in favor of consecutive_5xx_errors in newer Istio
+          consecutive_local_origin_failures  = optional(number) # Number of local origin failures before ejection
+          interval                           = optional(string) # e.g., "10s"
+          base_ejection_time                 = optional(string) # e.g., "30s"
+          max_ejection_percent               = optional(number) # 0-100
+          consecutive_errors                 = optional(number) # Generic consecutive errors
+          split_external_local_origin_errors = optional(bool)   # Distinguish local origin failures from upstream errors
+          min_health_percent                 = optional(number) # 0-100, panic threshold below which ejection stops
         }))
         # Inlined tls_client_settings_type
         tls = optional(object({

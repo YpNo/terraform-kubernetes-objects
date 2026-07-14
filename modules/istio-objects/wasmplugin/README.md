@@ -38,6 +38,34 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "wasmplugin" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/wasmplugin?ref=v0.1.0"
+
+  wasm_plugins = [
+    {
+      name      = "basic-auth"
+      namespace = "bookinfo"
+      selector  = { match_labels = { app = "productpage" } }
+      url       = "oci://ghcr.io/istio-ecosystem/wasm-extensions/basic_auth:1.12.0"
+      phase     = "AUTHN"
+      plugin_config = {
+        basic_auth_rules = [
+          {
+            prefix    = "/api/v1"
+            request_methods = ["GET", "POST"]
+            credentials     = ["ok:test"]
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

@@ -38,6 +38,50 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "envoyfilter" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/envoyfilter?ref=v0.1.0"
+
+  envoy_filters = [
+    {
+      name      = "set-server-header"
+      namespace = "istio-system"
+      workload_selector = {
+        labels = { istio = "ingressgateway" }
+      }
+      config_patches = [
+        {
+          apply_to = "NETWORK_FILTER"
+          match = {
+            context = "GATEWAY"
+            listener = {
+              filterChain = {
+                filter = {
+                  name = "envoy.filters.network.http_connection_manager"
+                }
+              }
+            }
+          }
+          patch = {
+            operation = "MERGE"
+            value = {
+              typed_config = {
+                "@type"            = "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager"
+                server_name        = "my-gateway"
+                server_header_transformation = "OVERWRITE"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

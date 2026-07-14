@@ -34,10 +34,50 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_secrets"></a> [secrets](#output\_secrets) | Map of created Secrets keyed by name. Reference name/namespace from env\_from, volumes, image\_pull\_secrets or TLS refs. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "secret_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/secret_v1?ref=v0.1.0"
+
+  secrets = [
+    {
+      name      = "my-app-db-creds"
+      namespace = "default"
+      type      = "Opaque"
+      data = {
+        "username" = "admin" # Terraform will base64 encode this
+        "password" = "supersecretpassword"
+      }
+    },
+    {
+      name      = "my-tls-secret"
+      namespace = "ingress-nginx"
+      type      = "kubernetes.io/tls"
+      data = {
+        "tls.crt" = filebase64("path/to/your/certificate.crt") # Use filebase64 for certificate files
+        "tls.key" = filebase64("path/to/your/private.key")     # Use filebase64 for key files
+      }
+    },
+    {
+      name      = "docker-registry-secret"
+      namespace = "default"
+      type      = "kubernetes.io/dockerconfigjson"
+      data = {
+        ".dockerconfigjson" = filebase64("path/to/your/.dockerconfigjson") # Or encode manually
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

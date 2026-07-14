@@ -38,6 +38,34 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "api_service_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/api_service_v1?ref=v0.1.0"
+
+...
+
+  api_services = [
+    {
+      name = "v1beta1.metrics.k8s.io"
+      spec = {
+        group                    = "metrics.k8s.io"
+        group_priority_minimum   = 100
+        version                  = "v1beta1"
+        version_priority         = 100
+        insecure_skip_tls_verify = true
+        service = {
+          name      = "metrics-server"
+          namespace = "kube-system"
+        }
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

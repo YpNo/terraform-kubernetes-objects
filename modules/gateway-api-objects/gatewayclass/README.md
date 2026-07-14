@@ -34,10 +34,13 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_gateway_classes"></a> [gateway\_classes](#output\_gateway\_classes) | Map of created GatewayClasses keyed by name. Reference the name from a Gateway's gateway\_class\_name. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
 ### with Terraform
 
 ```terraform
@@ -53,4 +56,20 @@ module "gateway_class" {
   ]
 }
 
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
+  gateway_classes = [
+    {
+      name            = "gke-l7-gxlb"
+      controller_name = "networking.gke.io/gateway"
+      description     = "GKE L7 Gateway Class"
+    }
+  ]
+}
 ```

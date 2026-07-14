@@ -38,7 +38,8 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
-### with terraform
+
+### with Terraform
 
 ```terraform
 ...
@@ -46,6 +47,70 @@ No outputs.
 module "compute_class" {
   source = "./modules/gke-compute-class"
 
+  compute_classes = [
+    {
+      name      = "general-purpose"
+      namespace = "default"
+      labels = {
+        "class-type" = "general"
+      }
+      autoscaling_policy = {
+        consolidationDelayMinutes = 10
+        consolidationThreshold    = 70
+      }
+      priorities = [
+        {
+          machine_family = "n2"
+          spot           = true
+        },
+        {
+          machine_family = "n2d"
+          spot           = true
+        },
+        {
+          machine_family = "n2"
+          spot           = false
+        }
+      ]
+    },
+    {
+      name      = "gpu-optimized"
+      namespace = "gpu-workloads"
+      labels = {
+        "class-type" = "gpu"
+      }
+      active_migration = {
+        optimizeRulePriority = true
+      }
+      priorities = [
+        {
+          machine_type = "g2-standard-4"
+          spot         = true
+          gpu = {
+            type  = "nvidia-l4"
+            count = 1
+          }
+        },
+        {
+          machine_type = "g2-standard-8"
+          spot         = false
+          gpu = {
+            type  = "nvidia-l4"
+            count = 1
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
   compute_classes = [
     {
       name      = "general-purpose"

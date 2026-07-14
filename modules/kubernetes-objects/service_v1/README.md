@@ -34,10 +34,65 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_services"></a> [services](#output\_services) | Map of created Services keyed by name. Reference name/namespace as a backend from Ingress/HTTPRoute/VirtualService; cluster\_ip is the allocated virtual IP. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "service_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/service_v1?ref=v0.1.0"
+
+  services = [
+    {
+      name        = "my-app-service"
+      namespace   = "default"
+      type        = "ClusterIP"
+      ports = [
+        {
+          name        = "http"
+          port        = 80
+          target_port = 8080
+        },
+        {
+          name        = "metrics"
+          port        = 9090
+          target_port = 9090
+          protocol    = "TCP"
+        }
+      ]
+      selector = {
+        "app" = "my-app"
+      }
+    },
+    {
+      name             = "public-app-service"
+      namespace        = "prod"
+      type             = "LoadBalancer"
+      load_balancer_ip = "34.123.45.67" # Optional, if you want a specific static IP
+      ports = [
+        {
+          name        = "https"
+          port        = 443
+          target_port = 8443
+        }
+      ]
+      selector = {
+        "app" = "public-app"
+      }
+      wait_for_load_balancer = true
+      ignore_changes = [
+        "spec[0].cluster_ip" # Example: ignore changes to cluster_ip if it's assigned dynamically
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

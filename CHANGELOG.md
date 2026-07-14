@@ -54,10 +54,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `computeclass`: `apiVersion` updated `compute.gke.io/v1alpha1` → `cloud.google.com/v1`
   (current GA); added `flex_start`, `priority_score`, `nodepools`, `reservations`
   priority fields.
-- Deprecated the legacy non-versioned duplicate modules (`configmap`, `persistent_volume`,
-  `persistent_volume_claim`, `priorityclass`, `role`, `rolebinding`, `secret`,
-  `serviceaccount`) in favour of their `_v1` equivalents. They remain as aliases for
-  backward compatibility and will be removed in a future major release.
+- **BREAKING** — renamed `namespace` → `namespace_v1`, `pdb` → `pdb_v1` and
+  `storageclass` → `storageclass_v1` to standardise on the `_v1` naming. `namespace_v1`
+  and `storageclass_v1` now use the `kubernetes_namespace_v1` / `kubernetes_storage_class_v1`
+  provider resources (the rendered objects are unchanged). Update the module `source`
+  paths accordingly.
+
+### Removed
+- **BREAKING** — removed the legacy non-versioned duplicate modules (`configmap`,
+  `persistent_volume`, `persistent_volume_claim`, `priorityclass`, `role`, `rolebinding`,
+  `secret`, `serviceaccount`). Use their `_v1` equivalents, which are functionally
+  identical.
 
 ### Fixed
 - `computeclass`: the `autoscaling_policy` variable declared its keys in camelCase while

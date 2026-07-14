@@ -38,6 +38,29 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "gcp_gateway_policy" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/gke-objects/gcp_gateway_policy?ref=v0.1.0"
+
+  gcp_gateway_policies = [
+    {
+      name                = "external-gateway-policy"
+      namespace           = "istio-system"
+      allow_global_access = true
+      ssl_policy          = "my-ssl-policy"
+      target_ref = {
+        group = "gateway.networking.k8s.io"
+        kind  = "Gateway"
+        name  = "external-http"
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

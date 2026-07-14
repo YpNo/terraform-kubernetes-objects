@@ -39,6 +39,45 @@ No outputs.
 
 ## Usage
 
+### with Terraform
+
+```terraform
+module "limit_range_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/limit_range_v1?ref=v0.1.0"
+
+    limit_ranges = [
+      {
+        name      = "team-a-defaults"
+        namespace = "team-a"
+        labels = {
+          "app.kubernetes.io/component" = "limit-range"
+        }
+
+        limits = [
+          {
+            # Default requests/limits applied to containers without them
+            type            = "Container"
+            default         = { cpu = "200m", memory = "256Mi" }
+            default_request = { cpu = "100m", memory = "128Mi" }
+            max             = { cpu = "1", memory = "1Gi" }
+            min             = { cpu = "50m", memory = "64Mi" }
+
+            # Cap the limit/request ratio to prevent overcommit
+            max_limit_request_ratio = { cpu = "4" }
+          },
+          {
+            type = "PersistentVolumeClaim"
+            min  = { storage = "1Gi" }
+            max  = { storage = "10Gi" }
+          }
+        ]
+      }
+    ]
+}
+```
+
+### with Terragrunt
+
 ```terraform
 ...
 

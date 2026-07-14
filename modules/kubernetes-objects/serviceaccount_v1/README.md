@@ -36,10 +36,38 @@ No modules.
 
 | Name | Description |
 | ---- | ----------- |
-| <a name="output_service_accounts"></a> [service\_accounts](#output\_service\_accounts) | A map of created Kubernetes Service Accounts objects, keyed by their name. |
+| <a name="output_service_accounts"></a> [service\_accounts](#output\_service\_accounts) | Map of created ServiceAccounts keyed by name. Reference name/namespace from a pod's service\_account\_name or a RoleBinding subject. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "serviceaccount_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/serviceaccount_v1?ref=v0.1.0"
+
+  service_accounts = [
+    {
+      name        = "my-app-sa"
+      namespace   = "default"
+      annotations = {
+        "eks.amazonaws.com/role-arn" = "arn:aws:iam::123456789012:role/my-app-iam-role"
+      }
+      labels = {
+        "app.kubernetes.io/component" = "backend"
+      }
+      automount_service_account_token = true
+    },
+    {
+      name        = "cronjob-sa"
+      namespace   = "batch-jobs"
+      automount_service_account_token = false # For security, if token isn't needed
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

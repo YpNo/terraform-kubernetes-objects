@@ -38,6 +38,42 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "mutating_webhook_configuration_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/mutating_webhook_configuration_v1?ref=v0.1.0"
+
+...
+
+  mutating_webhook_configurations = [
+    {
+      name = "pod-defaulter.example.com"
+      webhooks = [
+        {
+          name                      = "pod-defaulter.example.com"
+          admission_review_versions = ["v1"]
+          side_effects              = "None"
+          failure_policy            = "Fail"
+          reinvocation_policy       = "IfNeeded"
+          client_config = {
+            service = { name = "webhook-svc", namespace = "webhooks", path = "/mutate" }
+          }
+          rules = [{
+            api_groups   = [""]
+            api_versions = ["v1"]
+            operations   = ["CREATE"]
+            resources    = ["pods"]
+            scope        = "Namespaced"
+          }]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

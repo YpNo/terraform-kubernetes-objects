@@ -38,6 +38,65 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "authorizationpolicy" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/authorizationpolicy?ref=v0.1.0"
+
+  authorization_policies = [
+    {
+      name        = "allow-httpbin-get"
+      namespace   = "default"
+      selector    = { "app" = "httpbin" } # Applies to pods with label app=httpbin
+      action      = "ALLOW"
+      rules = [
+        {
+          from = [{
+            source_principals = ["cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account"]
+          }]
+          to = [{
+            methods = ["GET"]
+            paths   = ["/status/*"]
+          }]
+          when = [{
+            key = "request.headers[x-user-id]"
+            values = ["authorized-user"]
+          }]
+        },
+        { # Another rule within the same policy (logical OR)
+          from = [{
+            namespaces = ["dev"] # Allow from 'dev' namespace
+          }]
+          to = [{
+            methods = ["POST"]
+          }]
+        }
+      ]
+    },
+    {
+      name        = "deny-admin-paths"
+      namespace   = "admin-app"
+      selector    = { "app" = "admin-dashboard" }
+      action      = "DENY"
+      rules = [
+        {
+          to = [{
+            paths = ["/admin/*"]
+            not_methods = ["OPTIONS"] # Deny all methods on /admin/* except OPTIONS
+          }]
+          when = [{
+            key = "request.auth.claims[groups]" # Example for JWT claim
+            not_values = ["admin", "super-admin"]
+          }]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

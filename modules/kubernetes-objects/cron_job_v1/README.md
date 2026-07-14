@@ -38,6 +38,37 @@ No outputs.
 
 ## Usage
 
+### with Terraform
+
+```terraform
+module "cron_job_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/cron_job_v1?ref=v0.1.0"
+
+  cron_jobs = [
+    {
+      name                          = "nightly-report"
+      namespace                     = "batch"
+      schedule                      = "0 2 * * *"
+      timezone                      = "Europe/Paris"
+      concurrency_policy            = "Forbid"
+      successful_jobs_history_limit = 3
+      pod_labels                    = { job = "nightly-report" }
+
+      containers = [
+        {
+          name    = "report"
+          image   = "myapp/report:1.0.0"
+          command = ["/bin/report", "--daily"]
+        }
+      ]
+      # restart_policy defaults to "Never"
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
 ```terraform
 inputs = {
   cron_jobs = [

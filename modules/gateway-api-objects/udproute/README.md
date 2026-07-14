@@ -38,12 +38,44 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
 ### with Terraform
 
 ```terraform
 module "udproute" {
   source = "./modules/gateway-api-objects/udproute"
 
+  udp_routes = [
+    {
+      name      = "dns"
+      namespace = "default"
+      parent_refs = [
+        {
+          name        = "udp-gateway"
+          section_name = "dns"
+        }
+      ]
+      rules = [
+        {
+          backend_refs = [
+            {
+              name = "coredns"
+              port = 53
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
   udp_routes = [
     {
       name      = "dns"

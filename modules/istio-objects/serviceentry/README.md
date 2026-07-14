@@ -38,6 +38,77 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "serviceentry" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/serviceentry?ref=v0.1.0"
+
+  service_entries = [
+    {
+      name        = "external-api"
+      namespace   = "default"
+      hosts       = ["api.example.com"]
+      addresses   = ["192.168.1.1/32"] # Optional IP or CIDR for DNS resolution
+      ports = [
+        { number = 443, name = "https", protocol = "HTTPS" }
+      ]
+      location    = "MESH_EXTERNAL"
+      resolution  = "DNS" # Proxy will resolve api.example.com via DNS
+      export_to   = ["."] # Export only to the current namespace (default if omitted)
+    },
+    {
+      name        = "static-db-entry"
+      namespace   = "default"
+      hosts       = ["mydb.internal"]
+      ports = [
+        { number = 5432, name = "tcp-db", protocol = "TCP" }
+      ]
+      location    = "MESH_EXTERNAL"
+      resolution  = "STATIC" # Endpoints are explicitly listed
+      endpoints = [
+        {
+          address = "10.0.0.100"
+          ports   = { "tcp-db" = 5432 }
+          labels  = { "region" = "us-east-1" }
+          weight  = 100
+        },
+        {
+          address = "10.0.0.101"
+          ports   = { "tcp-db" = 5432 }
+          labels  = { "region" = "us-east-1" }
+          weight  = 100
+        }
+      ]
+      export_to = ["*"] # Export to all namespaces in the mesh
+    },
+    {
+      name        = "internal-mesh-svc"
+      namespace   = "internal-services"
+      hosts       = ["custom-svc.internal"]
+      ports = [
+        { number = 80, name = "http-svc", protocol = "HTTP" }
+      ]
+      location    = "MESH_INTERNAL" # Useful for custom service discovery
+      resolution  = "DNS"
+      export_to   = ["prod-ns", "staging-ns"] # Export to specific namespaces
+    },
+    {
+      name        = "private-local-svc"
+      namespace   = "dev-tools"
+      hosts       = ["my-dev-tool.local"]
+      ports = [
+        { number = 8080, name = "http-dev", protocol = "HTTP" }
+      ]
+      resolution  = "STATIC"
+      endpoints   = [{ address = "127.0.0.1", ports = { "http-dev" = 8080 } }]
+      export_to   = ["~"] # Not exported to any namespace
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

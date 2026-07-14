@@ -38,6 +38,105 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "destinationrule" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/destinationrule?ref=v0.1.0"
+
+  destination_rules = [
+    {
+      name        = "my-service-dr"
+      namespace   = "default"
+      host        = "my-service.default.svc.cluster.local"
+      traffic_policy = {
+        load_balancer = {
+          simple = "ROUND_ROBIN"
+        }
+        connection_pool = {
+          http = {
+            http1_max_pending_requests = 100
+            idle_timeout               = "60s"
+          },
+          tcp = {
+            max_connections = 50
+            connect_timeout = "5s"
+            tcp_keepalive = {
+              probes = 3
+              time   = "30s"
+              interval = "10s"
+            }
+          }
+        }
+        outlier_detection = {
+          consecutive_5xx_errors = 5
+          interval               = "10s"
+          base_ejection_time     = "30s"
+          max_ejection_percent   = 100
+        }
+        tls = {
+          mode              = "ISTIO_MUTUAL"
+          client_certificate = "path/to/client-cert.pem" # Only if not using credential_name
+          private_key        = "path/to/client-key.pem"  # Only if not using credential_name
+          ca_certificates    = "path/to/ca-certs.pem"
+          sni                = "my-service.default.svc.cluster.local"
+        }
+        port_level_settings = [
+          {
+            port_number = 80
+            load_balancer = {
+              simple = "LEAST_CONN"
+            }
+          },
+          {
+            port_number = 9080
+            connection_pool = {
+              http = {
+                http2_max_requests = 50
+              }
+            }
+          }
+        ]
+      }
+      subsets = [
+        {
+          name   = "v1"
+          labels = { "version" = "v1" }
+          traffic_policy = {
+            load_balancer = {
+              simple = "RANDOM"
+            }
+          }
+        },
+        {
+          name   = "v2"
+          labels = { "version" = "v2" }
+          traffic_policy = {
+            connection_pool = {
+              http = {
+                max_requests_per_connection = 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      name        = "another-service-dr"
+      namespace   = "prod"
+      host        = "another-service"
+      subsets = [
+        {
+          name   = "stable"
+          labels = { "environment" = "production" }
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

@@ -39,6 +39,50 @@ No outputs.
 
 ## Usage
 
+### with Terraform
+
+```terraform
+module "resource_quota_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/resource_quota_v1?ref=v0.1.0"
+
+    resource_quotas = [
+      {
+        name      = "team-a-compute"
+        namespace = "team-a"
+        labels = {
+          "app.kubernetes.io/component" = "resource-quota"
+        }
+
+        # Aggregate hard limits enforced across the namespace
+        hard = {
+          "requests.cpu"    = "4"
+          "requests.memory" = "8Gi"
+          "limits.cpu"      = "8"
+          "limits.memory"   = "16Gi"
+          "pods"            = "20"
+          "services"        = "10"
+        }
+
+        # Only count long-running (non-terminating) workloads
+        scopes = ["NotTerminating"]
+
+        # Restrict the quota to a given priority class
+        scope_selector = {
+          match_expressions = [
+            {
+              scope_name = "PriorityClass"
+              operator   = "In"
+              values     = ["high"]
+            }
+          ]
+        }
+      }
+    ]
+}
+```
+
+### with Terragrunt
+
 ```terraform
 ...
 

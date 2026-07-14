@@ -38,6 +38,38 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "health_check_policy" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/gke-objects/health_check_policy?ref=v0.1.0"
+
+  health_check_policies = [
+    {
+      name                = "store-health-check"
+      namespace           = "default"
+      check_interval_sec  = 10
+      timeout_sec         = 5
+      healthy_threshold   = 2
+      unhealthy_threshold = 3
+      config = {
+        type = "HTTP"
+        http_health_check = {
+          port               = 8080
+          request_path       = "/healthz"
+          port_specification = "USE_FIXED_PORT"
+        }
+      }
+      target_ref = {
+        kind = "Service"
+        name = "store"
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

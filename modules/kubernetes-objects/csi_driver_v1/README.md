@@ -38,6 +38,28 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "csi_driver_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/csi_driver_v1?ref=v0.1.0"
+
+...
+
+  csi_drivers = [
+    {
+      name = "csi.example.com"
+      spec = {
+        attach_required        = true
+        pod_info_on_mount      = true
+        volume_lifecycle_modes = ["Persistent", "Ephemeral"]
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

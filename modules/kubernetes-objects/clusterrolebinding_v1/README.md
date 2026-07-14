@@ -39,6 +39,52 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "clusterrolebinding_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/clusterrolebinding_v1?ref=v0.1.0"
+
+    cluster_role_bindings = [
+    {
+      name      = "helm-read-binding"
+      role_ref = {
+        api_group = "rbac.authorization.k8s.io"
+        kind      = "Role"
+        name      = "pod-reader" # Assumes a Role named 'pod-reader' exists in default' namespace
+      }
+      subjects = [{
+        kind      = "ServiceAccount"
+        name      = "helm"
+        namespace = "default"
+        api_group = "" # Core API group for ServiceAccounts
+      }]
+    },
+    {
+      name      = "admin-user-binding"
+      role_ref = {
+        api_group = "rbac.authorization.k8s.io"
+        kind      = "ClusterRole"
+        name      = "cluster-admin"
+      }
+      subjects = [
+        {
+          kind      = "User"
+          name      = "toto@example.com"
+          api_group = "rbac.authorization.k8s.io"
+        },
+        {
+          kind      = "Group"
+          name      = "devops-admins@example.com"
+          api_group = "rbac.authorization.k8s.io"
+        },
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

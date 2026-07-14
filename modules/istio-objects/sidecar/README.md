@@ -38,6 +38,52 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "sidecar" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/sidecar?ref=v0.1.0"
+
+  sidecars = [
+    {
+      name      = "default-egress"
+      namespace = "default"
+      # Restrict egress to same namespace and istio-system only.
+      egress = [
+        {
+          hosts = ["./*", "istio-system/*"]
+        }
+      ]
+      outbound_traffic_policy = {
+        mode = "REGISTRY_ONLY"
+      }
+    },
+    {
+      name      = "ratings-sidecar"
+      namespace = "bookinfo"
+      workload_selector = {
+        labels = { app = "ratings" }
+      }
+      ingress = [
+        {
+          port             = { number = 9080, protocol = "HTTP", name = "http" }
+          default_endpoint = "127.0.0.1:8080"
+          capture_mode     = "DEFAULT"
+        }
+      ]
+      egress = [
+        {
+          port         = { number = 9080, protocol = "HTTP", name = "http" }
+          hosts        = ["./*"]
+          capture_mode = "IPTABLES"
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

@@ -38,6 +38,36 @@ No outputs.
 
 ## Usage
 
+### with Terraform
+
+```terraform
+module "job_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/job_v1?ref=v0.1.0"
+
+  jobs = [
+    {
+      name                       = "db-migrate"
+      namespace                  = "data"
+      backoff_limit              = 3
+      ttl_seconds_after_finished = "600"
+      wait_for_completion        = false
+      pod_labels                 = { job = "db-migrate" }
+
+      containers = [
+        {
+          name    = "migrate"
+          image   = "myapp/migrate:1.2.3"
+          command = ["/bin/migrate", "up"]
+        }
+      ]
+      # restart_policy defaults to "Never" for Jobs
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
 ```terraform
 inputs = {
   jobs = [

@@ -36,10 +36,50 @@ No modules.
 
 | Name | Description |
 | ---- | ----------- |
-| <a name="output_roles"></a> [roles](#output\_roles) | A map of created Kubernetes Role objects, keyed by their name. |
+| <a name="output_roles"></a> [roles](#output\_roles) | Map of created Roles keyed by name. Reference name/namespace from a RoleBinding roleRef. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "role_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/role_v1?ref=v0.1.0"
+
+  roles = [
+    {
+      name      = "pod-reader"
+      namespace = "default"
+      rules = [
+        {
+          api_groups = [""] # "" indicates the core API group
+          resources  = ["pods"]
+          verbs      = ["get", "watch", "list"]
+        },
+        {
+          api_groups     = ["apps"]
+          resources      = ["deployments"]
+          resource_names = ["my-app-deployment"]
+          verbs          = ["get"]
+        }
+      ]
+    },
+    {
+      name      = "configmap-editor"
+      namespace = "kube-system"
+      rules = [
+        {
+          api_groups = [""]
+          resources  = ["configmaps"]
+          verbs      = ["get", "update", "patch"]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

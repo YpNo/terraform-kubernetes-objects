@@ -34,10 +34,35 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_runtime_classes"></a> [runtime\_classes](#output\_runtime\_classes) | Map of created RuntimeClasses keyed by name. Reference the name from a pod's runtime\_class\_name. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "runtime_class_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/runtime_class_v1?ref=v0.1.0"
+
+...
+
+  runtime_classes = [
+    {
+      name    = "gvisor"
+      handler = "runsc"
+    },
+    {
+      name    = "kata"
+      handler = "kata-runtime"
+      labels  = { tier = "isolated" }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

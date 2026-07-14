@@ -38,6 +38,7 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
 ### with Terraform
 
 ```terraform
@@ -45,6 +46,34 @@ No outputs.
 module "reference_grant" {
   source = "./modules/gateway-api-objects/referencegrant"
 
+  reference_grants = [
+    {
+      name      = "allow-gateways-to-secrets"
+      namespace = "default"
+      from = [
+        {
+          group     = "gateway.networking.k8s.io"
+          kind      = "Gateway"
+          namespace = "gateway-infra"
+        }
+      ]
+      to = [
+        {
+          group = ""
+          kind  = "Secret"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
   reference_grants = [
     {
       name      = "allow-gateways-to-secrets"

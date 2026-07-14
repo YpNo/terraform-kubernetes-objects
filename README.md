@@ -41,7 +41,7 @@ objects:
 
 ```hcl
 module "namespaces" {
-  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/namespace?ref=v0.1.0"
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/namespace_v1?ref=v0.1.0"
 
   namespaces = [
     {
@@ -129,7 +129,6 @@ provider "kubernetes" {
 * [`api_service_v1`](modules/kubernetes-objects/api_service_v1)
 * [`clusterrole_v1`](modules/kubernetes-objects/clusterrole_v1)
 * [`clusterrolebinding_v1`](modules/kubernetes-objects/clusterrolebinding_v1)
-* [`configmap`](modules/kubernetes-objects/configmap)
 * [`configmap_v1`](modules/kubernetes-objects/configmap_v1)
 * [`cron_job_v1`](modules/kubernetes-objects/cron_job_v1)
 * [`csi_driver_v1`](modules/kubernetes-objects/csi_driver_v1)
@@ -141,28 +140,21 @@ provider "kubernetes" {
 * [`job_v1`](modules/kubernetes-objects/job_v1)
 * [`limit_range_v1`](modules/kubernetes-objects/limit_range_v1)
 * [`mutating_webhook_configuration_v1`](modules/kubernetes-objects/mutating_webhook_configuration_v1)
-* [`namespace`](modules/kubernetes-objects/namespace)
+* [`namespace_v1`](modules/kubernetes-objects/namespace_v1)
 * [`network_policy_v1`](modules/kubernetes-objects/network_policy_v1)
-* [`pdb`](modules/kubernetes-objects/pdb)
-* [`persistent_volume`](modules/kubernetes-objects/persistent_volume)
-* [`persistent_volume_claim`](modules/kubernetes-objects/persistent_volume_claim)
+* [`pdb_v1`](modules/kubernetes-objects/pdb_v1)
 * [`persistent_volume_claim_v1`](modules/kubernetes-objects/persistent_volume_claim_v1)
 * [`persistent_volume_v1`](modules/kubernetes-objects/persistent_volume_v1)
-* [`priorityclass`](modules/kubernetes-objects/priorityclass)
 * [`priorityclass_v1`](modules/kubernetes-objects/priorityclass_v1)
 * [`resource_quota_v1`](modules/kubernetes-objects/resource_quota_v1)
-* [`role`](modules/kubernetes-objects/role)
 * [`role_v1`](modules/kubernetes-objects/role_v1)
-* [`rolebinding`](modules/kubernetes-objects/rolebinding)
 * [`rolebinding_v1`](modules/kubernetes-objects/rolebinding_v1)
 * [`runtime_class_v1`](modules/kubernetes-objects/runtime_class_v1)
-* [`secret`](modules/kubernetes-objects/secret)
 * [`secret_v1`](modules/kubernetes-objects/secret_v1)
 * [`service_v1`](modules/kubernetes-objects/service_v1)
-* [`serviceaccount`](modules/kubernetes-objects/serviceaccount)
 * [`serviceaccount_v1`](modules/kubernetes-objects/serviceaccount_v1)
 * [`statefulset_v1`](modules/kubernetes-objects/statefulset_v1)
-* [`storageclass`](modules/kubernetes-objects/storageclass)
+* [`storageclass_v1`](modules/kubernetes-objects/storageclass_v1)
 * [`validating_webhook_configuration_v1`](modules/kubernetes-objects/validating_webhook_configuration_v1)
 * [`vpa`](modules/kubernetes-objects/vpa)
 

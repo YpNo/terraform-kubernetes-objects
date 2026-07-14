@@ -38,12 +38,44 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
 ### with Terraform
 
 ```terraform
 module "tlsroute" {
   source = "./modules/gateway-api-objects/tlsroute"
 
+  tls_routes = [
+    {
+      name      = "passthrough"
+      namespace = "default"
+      parent_refs = [
+        {
+          name = "tls-gateway"
+        }
+      ]
+      hostnames = ["secure.example.com"]
+      rules = [
+        {
+          backend_refs = [
+            {
+              name = "secure-backend"
+              port = 8443
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
   tls_routes = [
     {
       name      = "passthrough"

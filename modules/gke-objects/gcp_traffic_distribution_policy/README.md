@@ -38,6 +38,38 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "gcp_traffic_distribution_policy" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/gke-objects/gcp_traffic_distribution_policy?ref=v0.1.0"
+
+  gcp_traffic_distribution_policies = [
+    {
+      name      = "store-distribution"
+      namespace = "default"
+      default = {
+        service_lb_algorithm  = "WATERFALL_BY_REGION"
+        locality_lb_algorithm = "ROUND_ROBIN"
+        auto_capacity_drain = {
+          enable_auto_capacity_drain = true
+        }
+        failover_config = {
+          failover_health_threshold = 70
+        }
+      }
+      target_refs = [
+        {
+          kind = "Service"
+          name = "store"
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

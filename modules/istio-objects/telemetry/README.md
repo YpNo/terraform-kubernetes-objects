@@ -38,6 +38,50 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "telemetry" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/telemetry?ref=v0.1.0"
+
+  telemetries = [
+    {
+      # Mesh-wide defaults (name must be 'default', no namespace)
+      name = "default"
+      metrics = [
+        {
+          providers = ["prometheus"]
+        }
+      ]
+      tracing = [
+        {
+          providers = ["zipkin"]
+          sampling  = { percent = 10 } # Sample 10% of traces
+        }
+      ]
+      access_logging = [
+        {
+          providers = ["envoy"]
+        }
+      ]
+    },
+    {
+      # Workload-scoped override
+      name      = "reviews-tracing"
+      namespace = "bookinfo"
+      selector  = { app = "reviews" }
+      tracing = [
+        {
+          providers = ["zipkin"]
+          sampling  = { percent = 100 }
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

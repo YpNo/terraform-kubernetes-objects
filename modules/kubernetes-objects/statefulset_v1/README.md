@@ -33,10 +33,51 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_stateful_sets"></a> [stateful\_sets](#output\_stateful\_sets) | Map of created StatefulSets keyed by name. service\_name is the governing headless Service that provides stable network identity. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "statefulset_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/statefulset_v1?ref=v0.1.0"
+
+  stateful_sets = [
+    {
+      name                  = "postgres"
+      namespace             = "data"
+      service_name          = "postgres-headless"
+      replicas              = 3
+      selector_match_labels = { app = "postgres" }
+      pod_labels            = { app = "postgres" }
+
+      containers = [
+        {
+          name  = "postgres"
+          image = "postgres:16"
+          ports = [{ container_port = 5432, name = "pg" }]
+          env   = [{ name = "POSTGRES_PASSWORD", value_from = { secret_key_ref = { name = "pg-secret", key = "password" } } }]
+          volume_mounts = [{ name = "data", mount_path = "/var/lib/postgresql/data" }]
+        }
+      ]
+
+      volume_claim_templates = [
+        {
+          name         = "data"
+          access_modes = ["ReadWriteOnce"]
+          resources    = { requests = { storage = "10Gi" } }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### with Terragrunt
 
 ```terraform
 inputs = {

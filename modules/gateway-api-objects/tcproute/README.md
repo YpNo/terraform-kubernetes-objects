@@ -38,12 +38,44 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
 ### with Terraform
 
 ```terraform
 module "tcproute" {
   source = "./modules/gateway-api-objects/tcproute"
 
+  tcp_routes = [
+    {
+      name      = "redis"
+      namespace = "default"
+      parent_refs = [
+        {
+          name        = "tcp-gateway"
+          section_name = "redis"
+        }
+      ]
+      rules = [
+        {
+          backend_refs = [
+            {
+              name = "redis-server"
+              port = 6379
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
   tcp_routes = [
     {
       name      = "redis"

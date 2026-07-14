@@ -38,6 +38,53 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "requestauthentication" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/requestauthentication?ref=v0.1.0"
+
+  request_authentications = [
+    {
+      name        = "jwt-validation-policy"
+      namespace   = "default"
+      selector    = { "app" = "my-jwt-service" } # Applies to pods with app=my-jwt-service
+      jwt_rules = [
+        {
+          issuer = "https://accounts.google.com"
+          jwks_uri = "https://www.googleapis.com/oauth2/v3/certs"
+          audiences = ["my-service-audience"]
+          output_payload_to_header = "x-jwt-payload" # Output full payload to this header
+          output_claim_to_headers  = ["email=x-jwt-email"] # Map 'email' claim to 'x-jwt-email' header
+        },
+        { # Another rule for a different issuer/token type
+          issuer = "https://auth.example.com/oauth2"
+          jwks   = file("path/to/my/jwks.json") # Direct JWKS content
+          from_headers = [
+            { name = "x-token", prefix = "Bearer " } # Look for token in 'x-token' header, strip "Bearer "
+          ]
+          from_params = ["auth_token"] # Look for token in 'auth_token' query parameter
+          forward_original_token = false # Do not forward original token to the application
+        }
+      ]
+    },
+    {
+      name        = "global-jwt-policy"
+      namespace   = "istio-system"
+      selector    = { "istio" = "ingressgateway" } # Applies to the ingress gateway
+      jwt_rules = [
+        {
+          issuer = "https://your-org-auth.com"
+          jwks_uri = "https://your-org-auth.com/.well-known/jwks.json"
+          audiences = ["api.your-org.com"]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

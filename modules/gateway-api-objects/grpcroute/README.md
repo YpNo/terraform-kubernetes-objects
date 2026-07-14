@@ -38,12 +38,53 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
 ### with Terraform
 
 ```terraform
 module "grpcroute" {
   source = "./modules/gateway-api-objects/grpcroute"
 
+  grpc_routes = [
+    {
+      name      = "echo-grpc"
+      namespace = "default"
+      parent_refs = [
+        {
+          name = "external-grpc"
+        }
+      ]
+      hostnames = ["grpc.example.com"]
+      rules = [
+        {
+          matches = [
+            {
+              method = {
+                type    = "Exact"
+                service = "echo.Echo"
+                method  = "Ping"
+              }
+            }
+          ]
+          backend_refs = [
+            {
+              name = "echo-server"
+              port = 50051
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
   grpc_routes = [
     {
       name      = "echo-grpc"

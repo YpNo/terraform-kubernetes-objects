@@ -39,6 +39,61 @@ No outputs.
 
 ## Usage
 
+### with Terraform
+
+```terraform
+module "network_policy_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/network_policy_v1?ref=v0.1.0"
+
+    network_policies = [
+      {
+        name      = "allow-frontend-to-backend"
+        namespace = "default"
+        labels = {
+          "app.kubernetes.io/component" = "network-policy"
+        }
+
+        # Apply this policy to the backend pods
+        pod_selector = {
+          match_labels = {
+            app = "backend"
+          }
+        }
+
+        policy_types = ["Ingress", "Egress"]
+
+        ingress = [
+          {
+            ports = [
+              { port = "8080", protocol = "TCP" }
+            ]
+            from = [
+              # Allow traffic from frontend pods
+              { pod_selector = { match_labels = { app = "frontend" } } },
+              # Allow traffic from a labelled namespace
+              { namespace_selector = { match_labels = { name = "ingress" } } },
+              # Allow traffic from a CIDR range, excluding a subrange
+              { ip_block = { cidr = "10.0.0.0/8", except = ["10.0.0.0/24"] } }
+            ]
+          }
+        ]
+
+        egress = [
+          {
+            # Allow DNS resolution to any destination
+            ports = [
+              { port = "53", protocol = "UDP" },
+              { port = "53", protocol = "TCP" }
+            ]
+          }
+        ]
+      }
+    ]
+}
+```
+
+### with Terragrunt
+
 ```terraform
 ...
 

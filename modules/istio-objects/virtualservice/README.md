@@ -38,6 +38,108 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "virtualservice" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/virtualservice?ref=v0.1.0"
+
+  virtual_services = [
+    {
+      name        = "httpbin-vs"
+      namespace   = "default"
+      hosts       = ["httpbin.example.com"]
+      gateways    = ["httpbin-gateway"] # Assumes a Gateway named httpbin-gateway exists
+      http = [
+        {
+          match = [
+            {
+              uri = { prefix = "/status" }
+            }
+          ]
+          route = [
+            {
+              destination = {
+                host   = "httpbin" # Service name in the same namespace
+                port   = 80
+              }
+            }
+          ]
+        },
+        {
+          match = [
+            {
+              uri = { exact = "/headers" }
+              headers = {
+                "x-user-id" = { exact = "123" }
+              }
+            }
+          ]
+          rewrite = {
+            uri = "/new-headers-path"
+          }
+        },
+        {
+          match = [
+            {
+              uri = { prefix = "/" }
+            }
+          ]
+          route = [
+            {
+              destination = { host = "httpbin-v1", port = 80 },
+              weight      = 80
+            },
+            {
+              destination = { host = "httpbin-v2", port = 80 },
+              weight      = 20
+            }
+          ]
+          timeout = "10s"
+          retries = {
+            attempts = 3
+            retry_on = "5xx"
+          }
+          fault = {
+            abort = { http_status = 503, percentage = 10 } # 10% of requests abort with 503
+          }
+          mirror = {
+            host = "httpbin-mirror",
+            port = 80
+          }
+          mirror_percentage = 100 # Mirror 100% of traffic
+        }
+      ]
+    },
+    {
+      name        = "tls-passthrough-vs"
+      namespace   = "default"
+      hosts       = ["my-secure-service.example.com"]
+      gateways    = ["my-tls-gateway"]
+      tls = [
+        {
+          match = [{ sni_hosts = ["my-secure-service.example.com"] }]
+          route = [{ destination = { host = "my-secure-service", port = 443 } }]
+        }
+      ]
+    },
+    {
+      name        = "tcp-proxy-vs"
+      namespace   = "default"
+      hosts       = ["my-tcp-service.example.com"]
+      gateways    = ["my-tcp-gateway"]
+      tcp = [
+        {
+          match = [{ port = 9000 }]
+          route = [{ destination = { host = "my-tcp-backend", port = 9000 } }]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

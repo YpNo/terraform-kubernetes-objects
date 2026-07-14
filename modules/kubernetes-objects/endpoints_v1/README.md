@@ -38,6 +38,30 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "endpoints_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/endpoints_v1?ref=v0.1.0"
+
+...
+
+  endpoints = [
+    {
+      name      = "external-db"
+      namespace = "default"
+      subsets = [
+        {
+          address = [{ ip = "10.0.0.4" }, { ip = "10.0.0.5" }]
+          port    = [{ name = "https", port = 443, protocol = "TCP" }]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

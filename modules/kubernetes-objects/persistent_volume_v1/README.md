@@ -36,10 +36,60 @@ Manages cluster-scoped **PersistentVolume** objects (`kubernetes_persistent_volu
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_persistent_volumes"></a> [persistent\_volumes](#output\_persistent\_volumes) | Map of created PersistentVolumes keyed by name. Reference the name from a PVC's volume\_name. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "persistent_volume_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/persistent_volume_v1?ref=v0.1.0"
+
+...
+
+  persistent_volumes = {
+    # This PV will be created WITHOUT a corresponding PVC.
+    "shared-logs-pv" = {
+      storage_class_name = "slow"
+      access_modes       = ["ReadOnlyMany"]
+      capacity = {
+        storage = "50Gi"
+      }
+      persistent_volume_source = {
+        nfs = {
+          server = "10.0.0.5"
+          path   = "/exports/logs"
+        }
+      }
+      # No 'create_claim' block is present.
+    },
+
+    # This PV WILL have a PVC created for it automatically.
+    "mysql-data-pv" = {
+      storage_class_name = "fast-ssd"
+      access_modes       = ["ReadWriteOnce"]
+      capacity = {
+        storage = "20Gi"
+      }
+      persistent_volume_source = {
+        gce_persistent_disk = {
+          pd_name = "mysql-disk-1"
+        }
+      }
+      # This block triggers the PVC creation.
+      create_claim = {
+        namespace = "production"
+        storage_request = "10Gi" # If different of capacity storage
+      }
+    }
+  }
+}
+```
+
 ### with Terragrunt
 
 ```terraform

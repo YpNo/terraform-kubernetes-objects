@@ -35,10 +35,48 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_persistent_volume_claims"></a> [persistent\_volume\_claims](#output\_persistent\_volume\_claims) | Map of created PersistentVolumeClaims keyed by "namespace-name". Reference name/namespace from a pod volume's claim\_name. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "persistent_volume_claim_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/persistent_volume_claim_v1?ref=v0.1.0"
+
+...
+
+  persistent_volume_claims = [
+    # --- Example 1: Dynamic Provisioning ---
+    # This PVC will ask the 'standard-rwo' storage class to create a new PV for it.
+    {
+      name               = "dynamic-pvc-example"
+      namespace          = "default"
+      access_modes       = ["ReadWriteOnce"]
+      storage_request    = "5Gi"
+      storage_class_name = "standard-rwo"
+      labels = {
+        "app" = "my-database"
+      }
+    },
+
+    # --- Example 2: Binding to a Specific PV ---
+    # This PVC will not use a storage class and will bind directly to the PV named 'nfs-share-pv'.
+    {
+      name            = "static-pvc-example"
+      namespace       = "production"
+      access_modes    = ["ReadWriteMany"]
+      storage_request = "100Gi" # This must be less than or equal to the PV's capacity
+      volume_name     = "nfs-share-pv"
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

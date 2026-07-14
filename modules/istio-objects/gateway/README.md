@@ -34,10 +34,69 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_gateways"></a> [gateways](#output\_gateways) | Map of created Istio Gateways keyed by name. Reference "namespace/name" from a VirtualService's gateways list. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "gateway" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/gateway?ref=v0.1.0"
+
+  gateways = [
+    {
+      name        = "http-gateway"
+      namespace   = "istio-system"
+      selector    = { "istio" = "ingressgateway" } # Targets the default Istio ingress gateway
+      servers = [
+        {
+          port = {
+            number   = 80
+            name     = "http"
+            protocol = "HTTP"
+          }
+          hosts = ["*.example.com"]
+        }
+      ]
+    },
+    {
+      name        = "https-gateway"
+      namespace   = "istio-system"
+      selector    = { "istio" = "ingressgateway" }
+      servers = [
+        {
+          port = {
+            number   = 443
+            name     = "https"
+            protocol = "HTTPS"
+          }
+          hosts = ["secure.example.com"]
+          tls = {
+            mode            = "SIMPLE"
+            credential_name = "example-com-cert" # Kubernetes Secret name for TLS certs
+          }
+        },
+        {
+          port = {
+            number = 15443 # Default Istio TLS port for custom gateways
+            name = "istio-mutual-tls"
+            protocol = "TLS"
+          }
+          hosts = ["*.internal.svc.cluster.local"]
+          tls = {
+            mode = "ISTIO_MUTUAL"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

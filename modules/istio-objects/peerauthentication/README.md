@@ -38,6 +38,39 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "peerauthentication" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/peerauthentication?ref=v0.1.0"
+
+  peer_authentications = [
+    {
+      # Mesh-wide policy (no namespace, name must be 'default')
+      name      = "default"
+      mtls_mode = "PERMISSIVE" # Allow both mTLS and plain text across the mesh
+    },
+    {
+      # Namespace-wide policy (no selector)
+      name      = "default" # Name is 'default' for namespace-wide policy within that namespace
+      namespace = "my-secure-namespace"
+      mtls_mode = "STRICT" # Enforce mTLS for all services in 'my-secure-namespace'
+    },
+    {
+      # Workload-specific policy (with selector)
+      name      = "my-app-mtls"
+      namespace = "my-app-namespace"
+      selector  = { "app" = "my-service" } # Only applies to pods with app=my-service
+      mtls_mode = "STRICT"
+      port_level_mtls = {
+        "8080" = "PERMISSIVE" # Override for port 8080 on this workload
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

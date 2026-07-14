@@ -34,10 +34,40 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_managed_certificates"></a> [managed\_certificates](#output\_managed\_certificates) | Map of created ManagedCertificates keyed by name. Reference the name from an Ingress 'networking.gke.io/managed-certificates' annotation. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "managedcertificate" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/gke-objects/managedcertificate?ref=v0.1.0"
+
+  managed_certificates = [
+    {
+      name        = "my-app-cert"
+      namespace   = "my-app-namespace"
+      domains     = ["app.example.com", "www.app.example.com"]
+      labels      = { "managed-by" = "terraform" }
+    },
+    {
+      name        = "api-cert"
+      namespace   = "api-namespace"
+      domains     = ["api.example.com"]
+      annotations = { "description" = "Managed by GKE for API service" }
+      issuer_ref = { # Example with cert-manager integration
+        kind = "ClusterIssuer"
+        name = "letsencrypt-prod"
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

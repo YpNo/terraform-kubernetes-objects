@@ -38,6 +38,25 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "gcp_session_affinity_filter" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/gke-objects/gcp_session_affinity_filter?ref=v0.1.0"
+
+  gcp_session_affinity_filters = [
+    {
+      name      = "store-affinity-filter"
+      namespace = "default"
+      stateful_generated_cookie = {
+        cookie_ttl_seconds = 3600
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

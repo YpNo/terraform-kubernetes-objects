@@ -38,6 +38,41 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "validating_webhook_configuration_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/validating_webhook_configuration_v1?ref=v0.1.0"
+
+...
+
+  validating_webhook_configurations = [
+    {
+      name = "pod-policy.example.com"
+      webhooks = [
+        {
+          name                      = "pod-policy.example.com"
+          admission_review_versions = ["v1"]
+          side_effects              = "None"
+          failure_policy            = "Fail"
+          client_config = {
+            service = { name = "webhook-svc", namespace = "webhooks", path = "/validate" }
+          }
+          rules = [{
+            api_groups   = [""]
+            api_versions = ["v1"]
+            operations   = ["CREATE", "UPDATE"]
+            resources    = ["pods"]
+            scope        = "Namespaced"
+          }]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

@@ -38,6 +38,28 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "proxyconfig" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/proxyconfig?ref=v0.1.0"
+
+  proxy_configs = [
+    {
+      name      = "high-concurrency"
+      namespace = "bookinfo"
+      selector  = { match_labels = { app = "ratings" } }
+      concurrency = 4
+      environment_variables = {
+        ISTIO_META_DNS_CAPTURE = "true"
+      }
+      image = { image_type = "distroless" }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

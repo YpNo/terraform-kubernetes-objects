@@ -38,6 +38,35 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "service_attachment" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/gke-objects/service_attachment?ref=v0.1.0"
+
+  service_attachments = [
+    {
+      name                  = "store-psc"
+      namespace             = "default"
+      connection_preference = "ACCEPT_MANUAL"
+      nat_subnets           = ["psc-nat-subnet"]
+      proxy_protocol        = false
+      consumer_allow_list = [
+        {
+          project          = "consumer-project-id"
+          connection_limit = 10
+        }
+      ]
+      resource_ref = {
+        kind = "Service"
+        name = "store"
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

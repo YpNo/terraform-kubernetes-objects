@@ -38,6 +38,7 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
 ### with Terraform
 
 Example 1:
@@ -45,6 +46,31 @@ Example 1:
 module "backend_policy" {
   source = "./modules/gateway-api-objects/policy"
 
+  gateway_policies = [
+    {
+      name      = "store-backend-policy"
+      namespace = "default"
+      kind      = "GCPBackendPolicy"
+
+      target_ref = {
+        kind = "Service"
+        name = "store-svc"
+      }
+
+      policy_spec = {
+        securityPolicy = "my-cloud-armor-policy"
+      }
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
   gateway_policies = [
     {
       name      = "store-backend-policy"

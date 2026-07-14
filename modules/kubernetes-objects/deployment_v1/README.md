@@ -33,10 +33,102 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_deployments"></a> [deployments](#output\_deployments) | Map of created Deployments keyed by name. Reference name/namespace from an HPA/PDB target or a Service selector. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "deployment_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/deployment_v1?ref=v0.1.0"
+
+    deployments = [
+      {
+        name        = "nginx-web-app"
+        namespace   = "default" # Deploy to the 'default' namespace
+        labels      = {
+          "app.kubernetes.io/name" = "nginx-web"
+        }
+        annotations = {
+          "description" = "A simple Nginx web application deployment"
+        }
+
+        replicas    = 3 # Maintain 3 replicas of the pod
+
+        # Selector labels must match the pod labels
+        selector_match_labels = {
+          "app" = "nginx"
+        }
+
+        # RollingUpdate strategy is typically the default, but explicitly defined here
+        strategy_type = "RollingUpdate"
+        rolling_update_strategy = {
+          max_surge       = "25%" # 25% extra pods during update
+          max_unavailable = "25%" # 25% pods unavailable during update
+        }
+
+        # Pod template metadata
+        pod_labels = {
+          "app"     = "nginx"
+          "tier"    = "frontend"
+          "version" = "1.21"
+        }
+        pod_annotations = {
+          "prometheus.io/scrape" = "true"
+          "prometheus.io/port"   = "80"
+        }
+
+        # Container definitions for the pods
+        containers = [
+          {
+            name  = "nginx-container"
+            image = "nginx:1.21.6" # Use a specific image version for stability
+            ports = [
+              {
+                container_port = 80
+                name           = "http-web"
+                protocol       = "TCP"
+              }
+            ]
+            # Basic resource requests/limits (highly recommended for production)
+            resources = {
+              requests = {
+                cpu    = "100m"
+                memory = "128Mi"
+              }
+              limits = {
+                cpu    = "200m"
+                memory = "256Mi"
+              }
+            }
+          }
+        ]
+
+        # Optional: Link to a service account if needed
+        # service_account_name = "nginx-service-account"
+
+        # Optional: Define basic liveness and readiness probes
+        # liveness_probe = {
+        #   http_get = { path = "/healthz", port = "http-web" }
+        #   initial_delay_seconds = 10
+        #   period_seconds = 5
+        # }
+        # readiness_probe = {
+        #   http_get = { path = "/ready", port = "http-web" }
+        #   initial_delay_seconds = 5
+        #   period_seconds = 3
+        # }
+      },
+      # You can add more deployment definitions here if needed
+    ]
+}
+```
+
+### with Terragrunt
 
 ```terraform
 ...

@@ -34,10 +34,52 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_priority_classes"></a> [priority\_classes](#output\_priority\_classes) | Map of created PriorityClasses keyed by name. Reference the name from a pod's priority\_class\_name. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "priorityclass_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/priorityclass_v1?ref=v0.1.0"
+
+...
+
+  priority_classes = [
+    {
+      name        = "critical-system-priority"
+      value       = 1000000 # High priority
+      description = "For critical cluster components, allows preemption."
+    },
+    {
+      name           = "high-priority-app"
+      value          = 500000
+      description    = "For important applications, can preempt lower priority pods."
+      labels         = { priority = "high" }
+      annotations    = { "components.gke.io/component-name" = "managed-prometheus" }
+      global_default = false
+    },
+    {
+      name              = "batch-job-priority"
+      value             = 100
+      description       = "For batch jobs that should not preempt other pods."
+      global_default    = false
+      preemption_policy = "Never" # This ensures it won't preempt
+    },
+    {
+      name           = "default-global-priority"
+      value          = 0 # Lowest priority
+      description    = "Default priority for pods that do not specify a priorityClass."
+      global_default = true # This will be the cluster-wide default
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

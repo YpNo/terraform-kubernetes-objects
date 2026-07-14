@@ -38,6 +38,29 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "workloadentry" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/workloadentry?ref=v0.1.0"
+
+  workload_entries = [
+    {
+      name            = "vm-details-1"
+      namespace       = "bookinfo"
+      address         = "10.0.0.42"
+      ports           = { http = 8080 }
+      service_account = "details-sa"
+      network         = "vm-network"
+      locality        = "us-west/zone1"
+      weight          = 100
+      workload_labels = { app = "details", version = "v1" }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

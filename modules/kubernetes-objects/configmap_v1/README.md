@@ -34,10 +34,40 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_config_maps"></a> [config\_maps](#output\_config\_maps) | Map of created ConfigMaps keyed by name. Reference name/namespace from a pod's env\_from, volumes or valueFrom. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "configmap_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/configmap_v1?ref=v0.1.0"
+
+  config_maps = [
+    {
+      name      = "my-app-config"
+      namespace = "default"
+      data = {
+        "config.json" = "{\"setting1\": \"value1\", \"setting2\": \"value2\"}"
+        "log_level"   = "INFO"
+      }
+    },
+    {
+      name      = "database-config"
+      namespace = "backend"
+      data = {
+        "db_host" = "mydb-service"
+        "db_port" = "5432"
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

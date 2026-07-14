@@ -38,12 +38,44 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
 ### with Terraform
 
 ```terraform
 module "http_route" {
   source = "./modules/gateway-api-objects/httproute"
 
+  http_routes = [
+    {
+      name      = "store-route"
+      namespace = "default"
+      parent_refs = [
+        {
+          name = "external-http"
+        }
+      ]
+      hostnames = ["store.example.com"]
+      rules = [
+        {
+          backend_refs = [
+            {
+              name = "store-svc"
+              port = 8080
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
   http_routes = [
     {
       name      = "store-route"

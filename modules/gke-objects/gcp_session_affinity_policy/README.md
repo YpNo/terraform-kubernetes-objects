@@ -38,6 +38,29 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "gcp_session_affinity_policy" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/gke-objects/gcp_session_affinity_policy?ref=v0.1.0"
+
+  gcp_session_affinity_policies = [
+    {
+      name      = "store-affinity"
+      namespace = "default"
+      stateful_generated_cookie = {
+        cookie_ttl_seconds = 3600
+      }
+      target_ref = {
+        kind = "Service"
+        name = "store"
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

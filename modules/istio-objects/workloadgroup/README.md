@@ -38,6 +38,40 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "workloadgroup" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/istio-objects/workloadgroup?ref=v0.1.0"
+
+  workload_groups = [
+    {
+      name      = "reviews"
+      namespace = "bookinfo"
+      template_metadata = {
+        labels = { app = "reviews" }
+      }
+      template = {
+        ports           = { http = 8080 }
+        service_account = "reviews-sa"
+        network         = "vm-network"
+        labels          = { app = "reviews", version = "v1" }
+      }
+      probe = {
+        period_seconds        = 10
+        initial_delay_seconds = 5
+        failure_threshold     = 3
+        http_get = {
+          path = "/healthz"
+          port = 8080
+        }
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

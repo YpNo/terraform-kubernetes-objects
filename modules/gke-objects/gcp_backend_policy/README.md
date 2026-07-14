@@ -38,6 +38,43 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "gcp_backend_policy" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/gke-objects/gcp_backend_policy?ref=v0.1.0"
+
+  gcp_backend_policies = [
+    {
+      name            = "store-backend"
+      namespace       = "default"
+      security_policy = "my-cloud-armor-policy"
+      timeout_sec     = 30
+      logging = {
+        enabled     = true
+        sample_rate = 1000000
+      }
+      session_affinity = {
+        type           = "GENERATED_COOKIE"
+        cookie_ttl_sec = 3600
+      }
+      connection_draining = {
+        draining_timeout_sec = 60
+      }
+      iap = {
+        enabled                   = true
+        oauth2_client_secret_name = "iap-oauth-secret"
+      }
+      target_ref = {
+        kind = "Service"
+        name = "store"
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

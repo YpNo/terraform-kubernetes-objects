@@ -34,16 +34,43 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_gateways"></a> [gateways](#output\_gateways) | Map of created Gateway API Gateways keyed by "namespace-name". Reference name/namespace from an HTTPRoute/GRPCRoute parentRefs. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
 ### with Terraform
 
 ```terraform
 module "gateway" {
   source = "./modules/gateway-api-objects/gateway"
 
+  gateways = [
+    {
+      name               = "external-http"
+      namespace          = "default"
+      gateway_class_name = "gke-l7-gxlb"
+      listeners = [
+        {
+          name     = "http"
+          protocol = "HTTP"
+          port     = 80
+          hostname = "*.example.com"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
   gateways = [
     {
       name               = "external-http"

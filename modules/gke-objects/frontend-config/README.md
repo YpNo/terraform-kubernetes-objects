@@ -34,10 +34,36 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_frontend_configs"></a> [frontend\_configs](#output\_frontend\_configs) | Map of created FrontendConfigs keyed by input name. 'name' is the applied object name (suffixed '-frontend-config'); reference it from an Ingress 'networking.gke.io/v1beta1.FrontendConfig' annotation. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "frontend_config" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/gke-objects/frontend-config?ref=v0.1.0"
+
+    frontend_configs = [
+    {
+      name                 = "my-app"
+      namespace            = "default"
+      ssl_policy           = "gcp-recommended-ssl-policy"
+      redirect_to_https    = true
+      redirect_to_https_response_code_name = "MOVED_PERMANENTLY_DEFAULT"
+    },
+    {
+      name                 = "another-app"
+      namespace            = "prod"
+      redirect_to_https    = true
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

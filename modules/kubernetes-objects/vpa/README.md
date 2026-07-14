@@ -38,6 +38,77 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "vpa" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/vpa?ref=v0.1.0"
+
+  vpas = [
+    {
+      name        = "my-app-vpa"
+      namespace   = "default"
+      labels      = { "app" = "my-app" }
+      target_ref = {
+        api_version = "apps/v1"
+        kind        = "Deployment"
+        name        = "my-app-deployment"
+      }
+      update_policy = {
+        update_mode = "Auto"
+      }
+      resource_policy = {
+        container_policies = [
+          {
+            container_name = "*" # Apply to all containers in the pod
+            min_allowed = {
+              "cpu"    = "100m"
+              "memory" = "50Mi"
+            }
+            max_allowed = {
+              "cpu"    = "2"
+              "memory" = "4Gi"
+            }
+            controlled_resources = ["cpu", "memory"]
+            value_type = "RequestsAndLimits"
+          }
+        ]
+      }
+      recommender_policy = {
+        recommenders = [{
+          name = "default"
+        }]
+      }
+    },
+    {
+      name        = "job-vpa"
+      namespace   = "batch"
+      target_ref = {
+        api_version = "batch/v1"
+        kind        = "Job"
+        name        = "my-batch-job"
+      }
+      update_policy = {
+        update_mode = "Initial" # Only set resources at pod creation
+      }
+      resource_policy = {
+        container_policies = [
+          {
+            container_name = "worker-container"
+            min_allowed = {
+              "memory" = "1Gi"
+            }
+            controlled_resources = ["memory"]
+            value_type = "RequestsOnly"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

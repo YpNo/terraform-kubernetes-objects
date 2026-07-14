@@ -33,10 +33,42 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_daemon_sets"></a> [daemon\_sets](#output\_daemon\_sets) | Map of created DaemonSets keyed by name. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "daemonset_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/daemonset_v1?ref=v0.1.0"
+
+  daemon_sets = [
+    {
+      name                  = "node-exporter"
+      namespace             = "monitoring"
+      selector_match_labels = { app = "node-exporter" }
+      pod_labels            = { app = "node-exporter" }
+      host_network          = true
+
+      containers = [
+        {
+          name  = "node-exporter"
+          image = "prom/node-exporter:v1.8.0"
+          ports = [{ container_port = 9100, name = "metrics" }]
+        }
+      ]
+
+      tolerations = [{ operator = "Exists" }]
+    }
+  ]
+}
+```
+
+### with Terragrunt
 
 ```terraform
 inputs = {

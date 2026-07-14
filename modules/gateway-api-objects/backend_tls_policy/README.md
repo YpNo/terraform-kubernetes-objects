@@ -38,12 +38,43 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
 ### with Terraform
 
 ```terraform
 module "backend_tls_policy" {
   source = "./modules/gateway-api-objects/backend_tls_policy"
 
+  backend_tls_policies = [
+    {
+      name      = "backend-tls"
+      namespace = "default"
+      target_refs = [
+        {
+          kind = "Service"
+          name = "secure-backend"
+        }
+      ]
+      validation = {
+        ca_certificate_refs = [
+          {
+            kind = "ConfigMap"
+            name = "backend-ca"
+          }
+        ]
+        hostname = "secure-backend.example.com"
+      }
+    }
+  ]
+}
+```
+
+### with Terragrunt
+
+```terraform
+...
+
+inputs = {
   backend_tls_policies = [
     {
       name      = "backend-tls"

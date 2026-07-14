@@ -34,10 +34,67 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_backend_configs"></a> [backend\_configs](#output\_backend\_configs) | Map of created BackendConfigs keyed by input name. 'name' is the applied object name (suffixed '-backend-config'); reference it from a Service 'cloud.google.com/backend-config' annotation. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "backend_config" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/gke-objects/backend-config?ref=v0.1.0"
+
+  backend_configs = [
+    {
+      name                     = "my-app"
+      namespace                = "default"
+      cdn_enabled              = true
+      cdn_cache_policy = {
+        include_host         = true
+        include_protocol     = true
+        include_query_string = false
+      }
+      cdn_cache_mode           = "CACHE_ALL_STATIC"
+      negative_caching         = true
+      negative_caching_policy = [
+        { code = 404, ttl = 3600 },
+        { code = 500, ttl = 100 }
+      ]
+      iap_enabled              = true
+      iap_secret_name          = "iap-oauth-secret"
+      cloudarmor_enabled       = true
+      cloudarmor_custom_policy = "my-custom-security-policy"
+      custom_request_headers   = ["X-My-Request-Header: value"]
+      custom_response_headers  = ["X-My-Response-Header: value"]
+      logging_enabled          = true
+      logging_sample_rate      = 0.5
+      health_check = {
+        check_interval_sec  = 5
+        timeout_sec         = 5
+        healthy_threshold   = 2
+        unhealthy_threshold = 2
+        type                = "HTTP"
+        request_path        = "/healthz"
+        port                = 80
+      }
+      session_affinity = {
+        type           = "GENERATED_COOKIE"
+        cookie_ttl_sec = 86400
+      }
+    },
+    {
+      name        = "another-app"
+      namespace   = "prod"
+      iap_enabled = false
+      cloudarmor_enabled = true
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

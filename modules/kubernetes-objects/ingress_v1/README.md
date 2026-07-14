@@ -39,6 +39,57 @@ No outputs.
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "ingress_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/ingress_v1?ref=v0.1.0"
+
+  ingresses = [
+    {
+      name                 = "web-ingress-http"
+      namespace            = "istio-system"
+      ingress_class        = "nginx"
+      backend_name         = "web-service"
+      backend_port         = 80
+      allow_http           = true # Allow HTTP traffic
+      annotations = {
+        "nginx.ingress.kubernetes.io/rewrite-target" = "/"
+        "nginx.ingress.kubernetes.io/ssl-redirect"   = "false"
+      }
+    },
+    {
+      name                 = "api-ingress-gce"
+      namespace            = "istio-system"
+      ingress_class        = "gce"
+      backend_name         = "api-service"
+      backend_port         = 8080
+      static_ip_address    = "api-static-ip-prod" # Name of a pre-provisioned static IP
+      frontend_config      = "api-frontend-config-tls-redirect" # Name of a FrontendConfig resource
+      allow_http           = false # Only HTTPS traffic
+      managed_certificates = ["api-example-com-managed-cert"] # List of ManagedCertificate names
+      annotations = {
+        "kubernetes.io/ingress.regional-static-ip-name" = "api-static-ip-prod" # Example: region-specific IP
+      }
+    },
+    {
+      name                 = "dashboard-ingress"
+      namespace            = "namespace-1"
+      ingress_class        = "gce"
+      backend_name         = "dashboard-service"
+      backend_port         = 443
+      allow_http           = false
+      pre_shared_cert      = "dashboard-pre-shared-cert" # Name of a pre-shared Google Cloud SSL cert
+      annotations = {
+        "kubernetes.io/ingress.global-static-ip-name" = "dashboard-global-static-ip" # Example: global-specific IP
+      }
+    }
+  ]
+}
+}
+```
+
 ### with Terragrunt
 
 ```terraform

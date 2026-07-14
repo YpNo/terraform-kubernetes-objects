@@ -34,10 +34,50 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+| ---- | ----------- |
+| <a name="output_cluster_roles"></a> [cluster\_roles](#output\_cluster\_roles) | Map of created ClusterRoles keyed by name. Reference the name from a ClusterRoleBinding/RoleBinding roleRef. |
 <!-- END_TF_DOCS -->
 
 ## Usage
+
+### with Terraform
+
+```terraform
+module "clusterrole_v1" {
+  source = "github.com/YpNo/terraform-kubernetes-objects//modules/kubernetes-objects/clusterrole_v1?ref=v0.1.0"
+
+  cluster_roles = [
+    {
+      name      = "pod-reader"
+      rules = [
+        {
+          api_groups = [""] # "" indicates the core API group
+          resources  = ["pods"]
+          verbs      = ["get", "watch", "list"]
+        },
+        {
+          api_groups     = ["apps"]
+          resources      = ["deployments"]
+          resource_names = ["my-app-deployment"]
+          verbs          = ["get"]
+        }
+      ]
+    },
+    {
+      name      = "configmap-editor"
+      rules = [
+        {
+          api_groups = [""]
+          resources  = ["configmaps"]
+          verbs      = ["get", "update", "patch"]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### with Terragrunt
 
 ```terraform

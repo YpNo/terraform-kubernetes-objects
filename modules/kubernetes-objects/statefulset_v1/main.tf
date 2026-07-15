@@ -84,18 +84,32 @@ resource "kubernetes_stateful_set_v1" "this" {
           for_each = each.value.containers
 
           content {
-            name              = container.value.name
-            image             = container.value.image
-            image_pull_policy = container.value.image_pull_policy
-            command           = container.value.command
-            args              = container.value.args
-            working_dir       = container.value.working_dir
+            name                       = container.value.name
+            image                      = container.value.image
+            image_pull_policy          = container.value.image_pull_policy
+            command                    = container.value.command
+            args                       = container.value.args
+            working_dir                = container.value.working_dir
+            stdin                      = container.value.stdin
+            stdin_once                 = container.value.stdin_once
+            tty                        = container.value.tty
+            termination_message_path   = container.value.termination_message_path
+            termination_message_policy = container.value.termination_message_policy
+            dynamic "volume_device" {
+              for_each = container.value.volume_device
+              content {
+                name        = volume_device.value.name
+                device_path = volume_device.value.device_path
+              }
+            }
 
             dynamic "port" {
               for_each = container.value.ports
 
               content {
                 container_port = port.value.container_port
+                host_port      = port.value.host_port
+                host_ip        = port.value.host_ip
                 name           = port.value.name
                 protocol       = port.value.protocol
               }
@@ -196,8 +210,17 @@ resource "kubernetes_stateful_set_v1" "this" {
                 dynamic "http_get" {
                   for_each = liveness_probe.value.http_get != null ? [liveness_probe.value.http_get] : []
                   content {
-                    path = http_get.value.path
-                    port = http_get.value.port
+                    path   = http_get.value.path
+                    port   = http_get.value.port
+                    host   = http_get.value.host
+                    scheme = http_get.value.scheme
+                    dynamic "http_header" {
+                      for_each = http_get.value.http_header
+                      content {
+                        name  = http_header.value.name
+                        value = http_header.value.value
+                      }
+                    }
                   }
                 }
                 dynamic "tcp_socket" {
@@ -233,8 +256,17 @@ resource "kubernetes_stateful_set_v1" "this" {
                 dynamic "http_get" {
                   for_each = readiness_probe.value.http_get != null ? [readiness_probe.value.http_get] : []
                   content {
-                    path = http_get.value.path
-                    port = http_get.value.port
+                    path   = http_get.value.path
+                    port   = http_get.value.port
+                    host   = http_get.value.host
+                    scheme = http_get.value.scheme
+                    dynamic "http_header" {
+                      for_each = http_get.value.http_header
+                      content {
+                        name  = http_header.value.name
+                        value = http_header.value.value
+                      }
+                    }
                   }
                 }
                 dynamic "tcp_socket" {
@@ -266,6 +298,15 @@ resource "kubernetes_stateful_set_v1" "this" {
                 run_as_group               = security_context.value.run_as_group
                 run_as_non_root            = security_context.value.run_as_non_root
                 allow_privilege_escalation = security_context.value.allow_privilege_escalation
+                privileged                 = security_context.value.privileged
+                read_only_root_filesystem  = security_context.value.read_only_root_filesystem
+                dynamic "capabilities" {
+                  for_each = security_context.value.capabilities != null ? [security_context.value.capabilities] : []
+                  content {
+                    add  = capabilities.value.add
+                    drop = capabilities.value.drop
+                  }
+                }
 
                 dynamic "se_linux_options" {
                   for_each = security_context.value.se_linux_options != null ? [security_context.value.se_linux_options] : []
@@ -298,8 +339,17 @@ resource "kubernetes_stateful_set_v1" "this" {
                 dynamic "http_get" {
                   for_each = startup_probe.value.http_get != null ? [startup_probe.value.http_get] : []
                   content {
-                    path = http_get.value.path
-                    port = http_get.value.port
+                    path   = http_get.value.path
+                    port   = http_get.value.port
+                    host   = http_get.value.host
+                    scheme = http_get.value.scheme
+                    dynamic "http_header" {
+                      for_each = http_get.value.http_header
+                      content {
+                        name  = http_header.value.name
+                        value = http_header.value.value
+                      }
+                    }
                   }
                 }
                 dynamic "tcp_socket" {
@@ -388,18 +438,32 @@ resource "kubernetes_stateful_set_v1" "this" {
           for_each = each.value.init_containers
 
           content {
-            name              = init_container.value.name
-            image             = init_container.value.image
-            image_pull_policy = init_container.value.image_pull_policy
-            command           = init_container.value.command
-            args              = init_container.value.args
-            working_dir       = init_container.value.working_dir
-            restart_policy    = init_container.value.restart_policy
+            name                       = init_container.value.name
+            image                      = init_container.value.image
+            image_pull_policy          = init_container.value.image_pull_policy
+            command                    = init_container.value.command
+            args                       = init_container.value.args
+            working_dir                = init_container.value.working_dir
+            restart_policy             = init_container.value.restart_policy
+            stdin                      = init_container.value.stdin
+            stdin_once                 = init_container.value.stdin_once
+            tty                        = init_container.value.tty
+            termination_message_path   = init_container.value.termination_message_path
+            termination_message_policy = init_container.value.termination_message_policy
+            dynamic "volume_device" {
+              for_each = init_container.value.volume_device
+              content {
+                name        = volume_device.value.name
+                device_path = volume_device.value.device_path
+              }
+            }
 
             dynamic "port" {
               for_each = init_container.value.ports
               content {
                 container_port = port.value.container_port
+                host_port      = port.value.host_port
+                host_ip        = port.value.host_ip
                 name           = port.value.name
                 protocol       = port.value.protocol
               }
@@ -497,8 +561,17 @@ resource "kubernetes_stateful_set_v1" "this" {
                 dynamic "http_get" {
                   for_each = liveness_probe.value.http_get != null ? [liveness_probe.value.http_get] : []
                   content {
-                    path = http_get.value.path
-                    port = http_get.value.port
+                    path   = http_get.value.path
+                    port   = http_get.value.port
+                    host   = http_get.value.host
+                    scheme = http_get.value.scheme
+                    dynamic "http_header" {
+                      for_each = http_get.value.http_header
+                      content {
+                        name  = http_header.value.name
+                        value = http_header.value.value
+                      }
+                    }
                   }
                 }
                 dynamic "tcp_socket" {
@@ -534,8 +607,17 @@ resource "kubernetes_stateful_set_v1" "this" {
                 dynamic "http_get" {
                   for_each = readiness_probe.value.http_get != null ? [readiness_probe.value.http_get] : []
                   content {
-                    path = http_get.value.path
-                    port = http_get.value.port
+                    path   = http_get.value.path
+                    port   = http_get.value.port
+                    host   = http_get.value.host
+                    scheme = http_get.value.scheme
+                    dynamic "http_header" {
+                      for_each = http_get.value.http_header
+                      content {
+                        name  = http_header.value.name
+                        value = http_header.value.value
+                      }
+                    }
                   }
                 }
                 dynamic "tcp_socket" {
@@ -571,8 +653,17 @@ resource "kubernetes_stateful_set_v1" "this" {
                 dynamic "http_get" {
                   for_each = startup_probe.value.http_get != null ? [startup_probe.value.http_get] : []
                   content {
-                    path = http_get.value.path
-                    port = http_get.value.port
+                    path   = http_get.value.path
+                    port   = http_get.value.port
+                    host   = http_get.value.host
+                    scheme = http_get.value.scheme
+                    dynamic "http_header" {
+                      for_each = http_get.value.http_header
+                      content {
+                        name  = http_header.value.name
+                        value = http_header.value.value
+                      }
+                    }
                   }
                 }
                 dynamic "tcp_socket" {
@@ -604,6 +695,15 @@ resource "kubernetes_stateful_set_v1" "this" {
                 run_as_group               = security_context.value.run_as_group
                 run_as_non_root            = security_context.value.run_as_non_root
                 allow_privilege_escalation = security_context.value.allow_privilege_escalation
+                privileged                 = security_context.value.privileged
+                read_only_root_filesystem  = security_context.value.read_only_root_filesystem
+                dynamic "capabilities" {
+                  for_each = security_context.value.capabilities != null ? [security_context.value.capabilities] : []
+                  content {
+                    add  = capabilities.value.add
+                    drop = capabilities.value.drop
+                  }
+                }
 
                 dynamic "se_linux_options" {
                   for_each = security_context.value.se_linux_options != null ? [security_context.value.se_linux_options] : []
@@ -635,19 +735,40 @@ resource "kubernetes_stateful_set_v1" "this" {
             dynamic "config_map" {
               for_each = volume.value.config_map != null ? [volume.value.config_map] : []
               content {
-                name = config_map.value.name
+                name         = config_map.value.name
+                default_mode = config_map.value.default_mode
+                optional     = config_map.value.optional
+                dynamic "items" {
+                  for_each = config_map.value.items
+                  content {
+                    key  = items.value.key
+                    path = items.value.path
+                    mode = items.value.mode
+                  }
+                }
               }
             }
             dynamic "secret" {
               for_each = volume.value.secret != null ? [volume.value.secret] : []
               content {
-                secret_name = secret.value.secret_name
+                secret_name  = secret.value.secret_name
+                default_mode = secret.value.default_mode
+                optional     = secret.value.optional
+                dynamic "items" {
+                  for_each = secret.value.items
+                  content {
+                    key  = items.value.key
+                    path = items.value.path
+                    mode = items.value.mode
+                  }
+                }
               }
             }
             dynamic "empty_dir" {
               for_each = volume.value.empty_dir != null ? [volume.value.empty_dir] : []
               content {
-                # EmptyDir has no required attributes
+                medium     = empty_dir.value.medium
+                size_limit = empty_dir.value.size_limit
               }
             }
             dynamic "persistent_volume_claim" {
@@ -660,10 +781,15 @@ resource "kubernetes_stateful_set_v1" "this" {
             dynamic "csi" {
               for_each = volume.value.csi != null ? [volume.value.csi] : []
               content {
-                driver = csi.value.driver
-                volume_attributes = {
-                  bucketName   = csi.value.volume_attributes.bucketName
-                  mountOptions = csi.value.volume_attributes.mountOptions
+                driver            = csi.value.driver
+                volume_attributes = csi.value.volume_attributes
+                fs_type           = csi.value.fs_type
+                read_only         = csi.value.read_only
+                dynamic "node_publish_secret_ref" {
+                  for_each = csi.value.node_publish_secret_ref != null ? [csi.value.node_publish_secret_ref] : []
+                  content {
+                    name = node_publish_secret_ref.value.name
+                  }
                 }
               }
             }
@@ -808,6 +934,39 @@ resource "kubernetes_stateful_set_v1" "this" {
         host_network                     = each.value.host_network
         host_pid                         = each.value.host_pid
         host_ipc                         = each.value.host_ipc
+        hostname                         = each.value.hostname
+        subdomain                        = each.value.subdomain
+        node_name                        = each.value.node_name
+        scheduler_name                   = each.value.scheduler_name
+        enable_service_links             = each.value.enable_service_links
+        share_process_namespace          = each.value.share_process_namespace
+        active_deadline_seconds          = each.value.active_deadline_seconds
+        dynamic "dns_config" {
+          for_each = each.value.dns_config != null ? [each.value.dns_config] : []
+          content {
+            nameservers = dns_config.value.nameservers
+            searches    = dns_config.value.searches
+            dynamic "option" {
+              for_each = dns_config.value.option
+              content {
+                name  = option.value.name
+                value = option.value.value
+              }
+            }
+          }
+        }
+        dynamic "os" {
+          for_each = each.value.os != null ? [each.value.os] : []
+          content {
+            name = os.value.name
+          }
+        }
+        dynamic "readiness_gate" {
+          for_each = each.value.readiness_gate
+          content {
+            condition_type = readiness_gate.value.condition_type
+          }
+        }
 
         dynamic "host_aliases" {
           for_each = each.value.host_aliases
@@ -864,6 +1023,14 @@ resource "kubernetes_stateful_set_v1" "this" {
                             values   = match_expressions.value.values
                           }
                         }
+                        dynamic "match_fields" {
+                          for_each = preference.value.match_fields
+                          content {
+                            key      = match_fields.value.key
+                            operator = match_fields.value.operator
+                            values   = match_fields.value.values
+                          }
+                        }
                       }
                     }
                   }
@@ -877,6 +1044,21 @@ resource "kubernetes_stateful_set_v1" "this" {
                   for_each = pod_affinity.value.required_during_scheduling_ignored_during_execution
                   content {
                     topology_key = required_during_scheduling_ignored_during_execution.value.topology_key
+                    namespaces   = required_during_scheduling_ignored_during_execution.value.namespaces
+                    dynamic "namespace_selector" {
+                      for_each = required_during_scheduling_ignored_during_execution.value.namespace_selector != null ? [required_during_scheduling_ignored_during_execution.value.namespace_selector] : []
+                      content {
+                        match_labels = namespace_selector.value.match_labels
+                        dynamic "match_expressions" {
+                          for_each = namespace_selector.value.match_expressions
+                          content {
+                            key      = match_expressions.value.key
+                            operator = match_expressions.value.operator
+                            values   = match_expressions.value.values
+                          }
+                        }
+                      }
+                    }
                     dynamic "label_selector" {
                       for_each = required_during_scheduling_ignored_during_execution.value.label_selector != null ? [required_during_scheduling_ignored_during_execution.value.label_selector] : []
                       content {
@@ -901,6 +1083,21 @@ resource "kubernetes_stateful_set_v1" "this" {
                       for_each = preferred_during_scheduling_ignored_during_execution.value.pod_affinity_term != null ? [preferred_during_scheduling_ignored_during_execution.value.pod_affinity_term] : []
                       content {
                         topology_key = pod_affinity_term.value.topology_key
+                        namespaces   = pod_affinity_term.value.namespaces
+                        dynamic "namespace_selector" {
+                          for_each = pod_affinity_term.value.namespace_selector != null ? [pod_affinity_term.value.namespace_selector] : []
+                          content {
+                            match_labels = namespace_selector.value.match_labels
+                            dynamic "match_expressions" {
+                              for_each = namespace_selector.value.match_expressions
+                              content {
+                                key      = match_expressions.value.key
+                                operator = match_expressions.value.operator
+                                values   = match_expressions.value.values
+                              }
+                            }
+                          }
+                        }
                         dynamic "label_selector" {
                           for_each = pod_affinity_term.value.label_selector != null ? [pod_affinity_term.value.label_selector] : []
                           content {
@@ -928,6 +1125,21 @@ resource "kubernetes_stateful_set_v1" "this" {
                   for_each = pod_anti_affinity.value.required_during_scheduling_ignored_during_execution
                   content {
                     topology_key = required_during_scheduling_ignored_during_execution.value.topology_key
+                    namespaces   = required_during_scheduling_ignored_during_execution.value.namespaces
+                    dynamic "namespace_selector" {
+                      for_each = required_during_scheduling_ignored_during_execution.value.namespace_selector != null ? [required_during_scheduling_ignored_during_execution.value.namespace_selector] : []
+                      content {
+                        match_labels = namespace_selector.value.match_labels
+                        dynamic "match_expressions" {
+                          for_each = namespace_selector.value.match_expressions
+                          content {
+                            key      = match_expressions.value.key
+                            operator = match_expressions.value.operator
+                            values   = match_expressions.value.values
+                          }
+                        }
+                      }
+                    }
                     dynamic "label_selector" {
                       for_each = required_during_scheduling_ignored_during_execution.value.label_selector != null ? [required_during_scheduling_ignored_during_execution.value.label_selector] : []
                       content {
@@ -952,6 +1164,21 @@ resource "kubernetes_stateful_set_v1" "this" {
                       for_each = preferred_during_scheduling_ignored_during_execution.value.pod_affinity_term != null ? [preferred_during_scheduling_ignored_during_execution.value.pod_affinity_term] : []
                       content {
                         topology_key = pod_affinity_term.value.topology_key
+                        namespaces   = pod_affinity_term.value.namespaces
+                        dynamic "namespace_selector" {
+                          for_each = pod_affinity_term.value.namespace_selector != null ? [pod_affinity_term.value.namespace_selector] : []
+                          content {
+                            match_labels = namespace_selector.value.match_labels
+                            dynamic "match_expressions" {
+                              for_each = namespace_selector.value.match_expressions
+                              content {
+                                key      = match_expressions.value.key
+                                operator = match_expressions.value.operator
+                                values   = match_expressions.value.values
+                              }
+                            }
+                          }
+                        }
                         dynamic "label_selector" {
                           for_each = pod_affinity_term.value.label_selector != null ? [pod_affinity_term.value.label_selector] : []
                           content {

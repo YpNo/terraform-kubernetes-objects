@@ -39,6 +39,8 @@ variable "cron_jobs" {
       working_dir       = optional(string)       # Container working directory
       ports = optional(list(object({
         container_port = number
+        host_port      = optional(number)
+        host_ip        = optional(string)
         name           = optional(string)
         protocol       = optional(string) # "TCP", "UDP", "SCTP"
       })), [])
@@ -57,9 +59,9 @@ variable "cron_jobs" {
       env_from        = optional(list(object({ prefix = optional(string), config_map_ref = optional(object({ name = string })), secret_ref = optional(object({ name = string })) })), [])
       resources       = optional(object({ limits = optional(map(string), {}), requests = optional(map(string), {}) }))
       volume_mounts   = optional(list(object({ name = string, mount_path = string, read_only = optional(bool, false), sub_path = optional(string) })), [])
-      liveness_probe  = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
-      readiness_probe = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
-      startup_probe   = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
+      liveness_probe  = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string, host = optional(string), scheme = optional(string), http_header = optional(list(object({ name = string, value = string })), []) })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
+      readiness_probe = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string, host = optional(string), scheme = optional(string), http_header = optional(list(object({ name = string, value = string })), []) })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
+      startup_probe   = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string, host = optional(string), scheme = optional(string), http_header = optional(list(object({ name = string, value = string })), []) })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
       # Container lifecycle hooks (postStart / preStop). Each handler is one of exec, http_get or tcp_socket.
       lifecycle = optional(object({
         post_start = optional(object({
@@ -73,15 +75,21 @@ variable "cron_jobs" {
           tcp_socket = optional(object({ port = string }))
         }))
       }))
+      stdin                      = optional(bool)
+      stdin_once                 = optional(bool)
+      tty                        = optional(bool)
+      termination_message_path   = optional(string)
+      termination_message_policy = optional(string) # "File" or "FallbackToLogsOnError"
+      volume_device              = optional(list(object({ name = string, device_path = string })), [])
       security_context = optional(object({
         run_as_user                = optional(number)
         run_as_group               = optional(number)
-        fs_group                   = optional(number)
-        allow_privilege_escalation = optional(bool)
-        supplemental_groups        = optional(list(number), [])
-        se_linux_options           = optional(object({ level = string, role = string, type = string, user = string }))
         run_as_non_root            = optional(bool)
-        fs_group_change_policy     = optional(string) # "OnRootMismatch" or "Always"
+        allow_privilege_escalation = optional(bool)
+        privileged                 = optional(bool)
+        read_only_root_filesystem  = optional(bool)
+        capabilities               = optional(object({ add = optional(list(string), []), drop = optional(list(string), []) }))
+        se_linux_options           = optional(object({ level = string, role = string, type = string, user = string }))
         seccomp_profile            = optional(object({ type = string, localhost_profile = optional(string) }))
       }))
     }))
@@ -98,6 +106,8 @@ variable "cron_jobs" {
       restart_policy    = optional(string) # "Always" turns the init container into a native sidecar
       ports = optional(list(object({
         container_port = number
+        host_port      = optional(number)
+        host_ip        = optional(string)
         name           = optional(string)
         protocol       = optional(string)
       })), [])
@@ -111,34 +121,59 @@ variable "cron_jobs" {
           resource_field_ref = optional(object({ resource = string, container_name = optional(string), divisor = optional(string) }))
         }))
       })), [])
-      env_from        = optional(list(object({ prefix = optional(string), config_map_ref = optional(object({ name = string })), secret_ref = optional(object({ name = string })) })), [])
-      resources       = optional(object({ limits = optional(map(string), {}), requests = optional(map(string), {}) }))
-      volume_mounts   = optional(list(object({ name = string, mount_path = string, read_only = optional(bool, false), sub_path = optional(string) })), [])
-      liveness_probe  = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
-      readiness_probe = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
-      startup_probe   = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
+      env_from                   = optional(list(object({ prefix = optional(string), config_map_ref = optional(object({ name = string })), secret_ref = optional(object({ name = string })) })), [])
+      resources                  = optional(object({ limits = optional(map(string), {}), requests = optional(map(string), {}) }))
+      volume_mounts              = optional(list(object({ name = string, mount_path = string, read_only = optional(bool, false), sub_path = optional(string) })), [])
+      liveness_probe             = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string, host = optional(string), scheme = optional(string), http_header = optional(list(object({ name = string, value = string })), []) })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
+      readiness_probe            = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string, host = optional(string), scheme = optional(string), http_header = optional(list(object({ name = string, value = string })), []) })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
+      startup_probe              = optional(object({ initial_delay_seconds = optional(number), period_seconds = optional(number), timeout_seconds = optional(number), success_threshold = optional(number), failure_threshold = optional(number), http_get = optional(object({ path = string, port = string, host = optional(string), scheme = optional(string), http_header = optional(list(object({ name = string, value = string })), []) })), tcp_socket = optional(object({ port = string })), exec = optional(object({ command = list(string) })), grpc = optional(object({ port = number, service = optional(string) })) }))
+      stdin                      = optional(bool)
+      stdin_once                 = optional(bool)
+      tty                        = optional(bool)
+      termination_message_path   = optional(string)
+      termination_message_policy = optional(string) # "File" or "FallbackToLogsOnError"
+      volume_device              = optional(list(object({ name = string, device_path = string })), [])
       security_context = optional(object({
         run_as_user                = optional(number)
         run_as_group               = optional(number)
-        fs_group                   = optional(number)
-        allow_privilege_escalation = optional(bool)
-        supplemental_groups        = optional(list(number), [])
-        se_linux_options           = optional(object({ level = string, role = string, type = string, user = string }))
         run_as_non_root            = optional(bool)
-        fs_group_change_policy     = optional(string)
+        allow_privilege_escalation = optional(bool)
+        privileged                 = optional(bool)
+        read_only_root_filesystem  = optional(bool)
+        capabilities               = optional(object({ add = optional(list(string), []), drop = optional(list(string), []) }))
+        se_linux_options           = optional(object({ level = string, role = string, type = string, user = string }))
         seccomp_profile            = optional(object({ type = string, localhost_profile = optional(string) }))
       }))
     })), [])
 
     volumes = optional(list(object({
-      name                    = string
-      config_map              = optional(object({ name = string }))
-      secret                  = optional(object({ secret_name = optional(string), default_mode = optional(string), optional = optional(bool) }))
-      empty_dir               = optional(object({}))
+      name = string
+      config_map = optional(object({
+        name         = optional(string)
+        default_mode = optional(string)
+        optional     = optional(bool)
+        items        = optional(list(object({ key = string, path = string, mode = optional(string) })), [])
+      }))
+      secret = optional(object({
+        secret_name  = optional(string)
+        default_mode = optional(string)
+        optional     = optional(bool)
+        items        = optional(list(object({ key = string, path = string, mode = optional(string) })), [])
+      }))
+      empty_dir = optional(object({
+        medium     = optional(string)
+        size_limit = optional(string)
+      }))
       persistent_volume_claim = optional(object({ claim_name = string, read_only = optional(bool, false) }))
-      csi                     = optional(object({ driver = string, volume_attributes = object({ bucketName = string, mountOptions = string }) }))
-      host_path               = optional(object({ path = string, type = optional(string) })) # type: "", DirectoryOrCreate, Directory, FileOrCreate, File, Socket, CharDevice, BlockDevice
-      nfs                     = optional(object({ server = string, path = string, read_only = optional(bool, false) }))
+      csi = optional(object({
+        driver                  = string
+        volume_attributes       = optional(map(string), {})
+        fs_type                 = optional(string)
+        read_only               = optional(bool)
+        node_publish_secret_ref = optional(object({ name = string }))
+      }))
+      host_path = optional(object({ path = string, type = optional(string) })) # type: "", DirectoryOrCreate, Directory, FileOrCreate, File, Socket, CharDevice, BlockDevice
+      nfs       = optional(object({ server = string, path = string, read_only = optional(bool, false) }))
       downward_api = optional(object({
         default_mode = optional(string)
         items = optional(list(object({
@@ -187,6 +222,19 @@ variable "cron_jobs" {
     host_pid                         = optional(bool) # Use the host PID namespace
     host_ipc                         = optional(bool) # Use the host IPC namespace
     host_aliases                     = optional(list(object({ ip = string, hostnames = list(string) })), [])
+    hostname                         = optional(string)
+    subdomain                        = optional(string)
+    node_name                        = optional(string)
+    scheduler_name                   = optional(string)
+    enable_service_links             = optional(bool)
+    share_process_namespace          = optional(bool)
+    dns_config = optional(object({
+      nameservers = optional(list(string), [])
+      searches    = optional(list(string), [])
+      option      = optional(list(object({ name = string, value = optional(string) })), [])
+    }))
+    os             = optional(object({ name = string }))
+    readiness_gate = optional(list(object({ condition_type = string })), [])
 
     affinity = optional(object({
       node_affinity = optional(object({
@@ -205,12 +253,12 @@ variable "cron_jobs" {
         })), [])
       }))
       pod_affinity = optional(object({
-        required_during_scheduling_ignored_during_execution  = optional(list(object({ label_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })), topology_key = string, namespaces = optional(list(string), []) })), [])
-        preferred_during_scheduling_ignored_during_execution = optional(list(object({ weight = number, pod_affinity_term = object({ label_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })), topology_key = string, namespaces = optional(list(string), []) }) })), [])
+        required_during_scheduling_ignored_during_execution  = optional(list(object({ label_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })), topology_key = string, namespaces = optional(list(string), []), namespace_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })) })), [])
+        preferred_during_scheduling_ignored_during_execution = optional(list(object({ weight = number, pod_affinity_term = object({ label_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })), topology_key = string, namespaces = optional(list(string), []), namespace_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })) }) })), [])
       }))
       pod_anti_affinity = optional(object({
-        required_during_scheduling_ignored_during_execution  = optional(list(object({ label_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })), topology_key = string, namespaces = optional(list(string), []) })), [])
-        preferred_during_scheduling_ignored_during_execution = optional(list(object({ weight = number, pod_affinity_term = object({ label_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })), topology_key = string, namespaces = optional(list(string), []) }) })), [])
+        required_during_scheduling_ignored_during_execution  = optional(list(object({ label_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })), topology_key = string, namespaces = optional(list(string), []), namespace_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })) })), [])
+        preferred_during_scheduling_ignored_during_execution = optional(list(object({ weight = number, pod_affinity_term = object({ label_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })), topology_key = string, namespaces = optional(list(string), []), namespace_selector = optional(object({ match_labels = optional(map(string), {}), match_expressions = optional(list(object({ key = string, operator = string, values = optional(list(string), []) })), []) })) }) })), [])
       }))
     }))
 
